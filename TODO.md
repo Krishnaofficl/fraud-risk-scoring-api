@@ -6,7 +6,7 @@ Tracking implementation progress for the **Fraud/Risk Scoring API** project acro
 
 ## Progress Overview
 
-- [ ] **Phase 0 — Environment & ML Reproduction** `[1/9]`
+- [ ] **Phase 0 — Environment & ML Reproduction** `[2/9]`
 - [ ] **Phase 1 — Project Skeleton & Configuration** `[0/7]`
 - [ ] **Phase 2 — Database Layer & Async Migrations** `[0/10]`
 - [ ] **Phase 3 — Modern Authentication** `[0/7]`
@@ -24,7 +24,7 @@ Tracking implementation progress for the **Fraud/Risk Scoring API** project acro
 > **Goal:** Acquire dataset, establish reproducible train/test splits, train `ColumnTransformer` + `XGBClassifier` pipeline, evaluate AUC against paper baseline, and serialize artifact.
 
 - [x] **0.0 Git Initialization:** Initialize git repository on `main` branch (`git init -b main`).
-- [ ] **0.1 Virtual Environment:** Create and activate `.venv` with Python 3.11+ / 3.12 (`python -m venv .venv`).
+- [x] **0.1 Virtual Environment:** Create and activate `.venv` with Python 3.11+ / 3.12 (`python -m venv .venv`).
 - [ ] **0.2 Install ML Packages:** Install modern ML libraries: `pandas>=2.0`, `scikit-learn>=1.4`, `xgboost>=2.0`, `joblib`, `kaggle`.
 - [ ] **0.3 Ingest Dataset:** Download Kaggle *Vehicle Loan Default Prediction* `train.csv` (233,154 rows) into `data/raw/` (via `scripts/download_data.py` or manual download).
 - [ ] **0.4 Standardized Split:** Verify exact 80/20 train/test split matching FDB specification: **186,523 train / 46,631 test**.

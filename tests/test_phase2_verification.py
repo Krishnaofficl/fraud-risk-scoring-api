@@ -12,7 +12,7 @@ from httpx import AsyncClient, ASGITransport
 
 from app.core.config import settings
 from app.db.session import async_session_maker, engine
-from app.main import app
+from app.main import app, lifespan
 from app.models.user import User
 from app.models.model_version import ModelVersion
 from app.models.scoring import ScoringRequest
@@ -47,14 +47,15 @@ async def run_checks():
 
     # 3. GET /health/ready (Live DB Ping)
     print("\n[3/5] Testing GET /health/ready (Live Endpoint)...")
-    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
-        resp = await client.get("/health/ready")
-        print(f"  --> HTTP Status Code: {resp.status_code}")
-        print(f"  --> Response JSON: {resp.json()}")
-        assert resp.status_code == 200, f"Expected 200, got {resp.status_code}"
-        assert resp.json()["status"] == "ready"
-        assert resp.json()["database"] == "connected"
-        print("      [OK] Live readiness probe returned 200 OK and database is connected.")
+    async with lifespan(app):
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+            resp = await client.get("/health/ready")
+            print(f"  --> HTTP Status Code: {resp.status_code}")
+            print(f"  --> Response JSON: {resp.json()}")
+            assert resp.status_code == 200, f"Expected 200, got {resp.status_code}"
+            assert resp.json()["status"] == "ready"
+            assert resp.json()["database"] == "connected"
+            print("      [OK] Live readiness probe returned 200 OK and database is connected.")
 
     # 4. GET /health (Liveness)
     print("\n[4/5] Testing GET /health (Liveness Probe)...")

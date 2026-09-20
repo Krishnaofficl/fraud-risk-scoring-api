@@ -8,7 +8,7 @@ Tracking implementation progress for the **Fraud/Risk Scoring API** project acro
 
 - [x] **Phase 0 — Environment & ML Reproduction** `[9/9]`
 - [x] **Phase 1 — Project Skeleton & Configuration** `[7/7]`
-- [ ] **Phase 2 — Database Layer & Async Migrations** `[0/10]`
+- [ ] **Phase 2 — Database Layer & Async Migrations** `[2/10]`
 - [ ] **Phase 3 — Modern Authentication** `[0/7]`
 - [ ] **Phase 4 — Core Scoring Endpoints** `[0/9]`
 - [ ] **Phase 5 — Error Handling & Resilience** `[0/5]`
@@ -62,8 +62,8 @@ Tracking implementation progress for the **Fraud/Risk Scoring API** project acro
 ## Phase 2 — Database Layer & Async Migrations
 > **Goal:** Async PostgreSQL database connectivity, SQLAlchemy 2.0 models, and versioned Alembic migrations.
 
-- [ ] **2.1 Async Engine & Session:** Configure `create_async_engine` and `async_sessionmaker` with `asyncpg` in `app/db/session.py`.
-- [ ] **2.2 Declarative Base:** Create `Base` class inheriting `DeclarativeBase` in `app/db/base.py`.
+- [x] **2.1 Async Engine & Session:** Configure `create_async_engine` and `async_sessionmaker` with `asyncpg` in `app/db/session.py`.
+- [x] **2.2 Declarative Base:** Create `Base` class inheriting `DeclarativeBase` in `app/db/base.py`.
 - [ ] **2.3 User ORM Model:** Define `User` model in `app/models/user.py` (`id`, `email`, `hashed_password`, `is_active`, `created_at`).
 - [ ] **2.4 Scoring Request ORM Model:** Define `ScoringRequest` model in `app/models/scoring.py` (`id`, `user_id`, `input_features` JSONB, `predicted_probability`, `decision`, `model_version`, `created_at`, `deleted_at`).
 - [ ] **2.5 Model Version ORM Model:** Define `ModelVersion` model in `app/models/model_version.py` (`version`, `trained_at`, `reported_auc`, `paper_baseline_auc`, `artifact_path`).

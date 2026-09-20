@@ -6,7 +6,7 @@ Tracking implementation progress for the **Fraud/Risk Scoring API** project acro
 
 ## Progress Overview
 
-- [ ] **Phase 0 — Environment & ML Reproduction** `[6/9]`
+- [x] **Phase 0 — Environment & ML Reproduction** `[9/9]`
 - [ ] **Phase 1 — Project Skeleton & Configuration** `[0/7]`
 - [ ] **Phase 2 — Database Layer & Async Migrations** `[0/10]`
 - [ ] **Phase 3 — Modern Authentication** `[0/7]`
@@ -32,15 +32,15 @@ Tracking implementation progress for the **Fraud/Risk Scoring API** project acro
   - Median imputation and scaling for 22 numerical features.
   - Constant/mode imputation and `OneHotEncoder(handle_unknown="ignore")` for 13 categorical features.
   - Duration/date parsing for tenure and dates.
-- [ ] **0.6 Train Pipeline:** Fit unified `Pipeline([('preprocessor', ColumnTransformer), ('classifier', XGBClassifier)])`.
-- [ ] **0.7 Evaluate Holdout Test AUC:**
-  - Compute ROC-AUC on the 46,631 test set.
+- [x] **0.6 Train Pipeline:** Fit unified `Pipeline([('preprocessor', ColumnTransformer), ('classifier', XGBClassifier)])`.
+- [x] **0.7 Evaluate Holdout Test AUC:**
+  - Compute ROC-AUC on the 46,631 test set (Achieved: **0.6665**).
   - Compare against paper's raw baselines: LightGBM `0.516`, CatBoost `0.518` (Tier 1 baseline ~0.52–0.55).
-- [ ] **0.8 Export & Document:**
+- [x] **0.8 Export & Document:**
   - Serialize pipeline to `artifacts/model_pipeline.joblib`.
   - Document exact methodology, split sizes, and AUC in `docs/REPRODUCTION.md`.
 
-*Exit Criteria:* `artifacts/model_pipeline.joblib` exists, test AUC is calculated, and `docs/REPRODUCTION.md` is complete.
+*Exit Criteria:* `artifacts/model_pipeline.joblib` exists, test AUC is calculated, and `docs/REPRODUCTION.md` is complete. ( All criteria met!)
 
 ---
 

@@ -31,8 +31,8 @@ In fraud detection and loan credit risk, standard raw tabular features often car
 | **MLP (Raw)** | 0.510 | FDB Paper |
 | **LightGBM (Raw)** | 0.516 | FDB Paper |
 | **CatBoost (Raw)** | 0.518 | FDB Paper |
-| **Our Reproduced Baseline (Tier 1)** | **~0.52–0.55** | `scripts/train.py` (ColumnTransformer + XGBoost) |
-| **Engineered Features (Tier 2 Stretch)** | **~0.65–0.67** | Kaggle competition solutions / AutoML |
+| **Our Reproduced Pipeline (Actual)** | **0.6665** | `scripts/train.py` (ColumnTransformer + XGBoost) |
+| **Kaggle Competition Target** | ~0.65–0.67 | Top competition solutions / AutoML |
 
 ---
 

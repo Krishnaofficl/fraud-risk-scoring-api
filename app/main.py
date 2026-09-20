@@ -1,16 +1,22 @@
 from contextlib import asynccontextmanager
+from datetime import datetime, timezone
 from pathlib import Path
 import joblib
 from fastapi import FastAPI
+from sqlalchemy import select
+
 from app.core.config import ROOT_DIR, settings
-from app.routers import auth, health, users
+from app.db.session import async_session_maker
+from app.models.model_version import ModelVersion
+from app.routers import auth, health, scoring, users
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """
     FastAPI Lifespan Context Manager.
-    Loads the trained model artifact into application state during startup
+    Loads the trained model artifact into application state during startup,
+    seeds the active model version metadata into PostgreSQL,
     and handles graceful teardown upon shutdown.
     """
     # 1. Startup logic: Load ML Model Pipeline
@@ -28,9 +34,28 @@ async def lifespan(app: FastAPI):
     app.state.model_version = settings.MODEL_VERSION
     print(f"ML Model pipeline '{settings.MODEL_VERSION}' loaded successfully.")
 
+    # 2. Ensure model version metadata is registered in DB (satisfying foreign key constraints)
+    try:
+        async with async_session_maker() as session:
+            stmt = select(ModelVersion).where(ModelVersion.version == settings.MODEL_VERSION)
+            res = await session.execute(stmt)
+            if not res.scalar_one_or_none():
+                mv = ModelVersion(
+                    version=settings.MODEL_VERSION,
+                    trained_at=datetime.now(timezone.utc),
+                    reported_auc=0.6665,
+                    paper_baseline_auc=0.5180,
+                    artifact_path=str(settings.MODEL_PATH),
+                )
+                session.add(mv)
+                await session.commit()
+                print(f"Registered model version '{settings.MODEL_VERSION}' in database.")
+    except Exception as exc:
+        print(f"Notice: Model version DB sync skipped or deferred ({exc}).")
+
     yield
 
-    # 2. Shutdown logic
+    # 3. Shutdown logic
     print(f"Shutting down {settings.PROJECT_NAME}...")
     app.state.model_pipeline = None
 
@@ -48,5 +73,7 @@ app = FastAPI(
 app.include_router(health.router)
 app.include_router(auth.router)
 app.include_router(users.router)
+app.include_router(scoring.router)
+
 
 

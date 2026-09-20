@@ -98,7 +98,7 @@ Tracking implementation progress for the **Fraud/Risk Scoring API** project acro
 - [x] **4.1 Startup Model Loading:** Load `artifacts/model_pipeline.joblib` into `app.state.model_pipeline` during FastAPI lifespan startup.
 - [x] **4.2 38-Feature Pydantic Schema:** Define `LoanApplicantInput` schema in `app/schemas/scoring.py` with typed fields, descriptions, and OpenAPI examples.
 - [x] **4.3 Scoring Response Schema:** Define `ScoringResultResponse` schema (`request_id`, `probability`, `decision`, `model_version`, `created_at`).
-- [ ] **4.4 POST `/v1/score` Endpoint:**
+- [x] **4.4 POST `/v1/score` Endpoint:**
   - Validate 38 applicant features via Pydantic.
   - Convert input to a single-row DataFrame.
   - Execute non-blocking inference via `await asyncio.to_thread(pipeline.predict_proba, input_df)`.

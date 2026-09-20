@@ -7,7 +7,7 @@ Tracking implementation progress for the **Fraud/Risk Scoring API** project acro
 ## Progress Overview
 
 - [x] **Phase 0 — Environment & ML Reproduction** `[9/9]`
-- [ ] **Phase 1 — Project Skeleton & Configuration** `[4/7]`
+- [x] **Phase 1 — Project Skeleton & Configuration** `[7/7]`
 - [ ] **Phase 2 — Database Layer & Async Migrations** `[0/10]`
 - [ ] **Phase 3 — Modern Authentication** `[0/7]`
 - [ ] **Phase 4 — Core Scoring Endpoints** `[0/9]`
@@ -51,11 +51,11 @@ Tracking implementation progress for the **Fraud/Risk Scoring API** project acro
 - [x] **1.2 Gitignore Verification:** Ensure `.gitignore` correctly ignores `.env`, `data/raw/*.csv`, `artifacts/*.joblib`, and `__pycache__` (Verified).
 - [x] **1.3 Settings Configuration:** Implement `app/core/config.py` using `pydantic-settings` (`BaseSettings`).
 - [x] **1.4 Database URL Normalizer:** Add `@field_validator` in settings to automatically convert `postgres://` / `postgresql://` to `postgresql+asyncpg://`.
-- [ ] **1.5 Environment Template:** Create local `.env` from `.env.example`.
-- [ ] **1.6 FastAPI Lifespan & App Factory:** Set up `app/main.py` with `@asynccontextmanager` lifespan.
-- [ ] **1.7 Liveness Probe:** Implement `GET /health` returning `{"status": "ok"}`.
+- [x] **1.5 Environment Template:** Create local `.env` from `.env.example` (Verified).
+- [x] **1.6 FastAPI Lifespan & App Factory:** Set up `app/main.py` with `@asynccontextmanager` lifespan.
+- [x] **1.7 Liveness Probe:** Implement `GET /health` returning `{"status": "ok"}`.
 
-*Exit Criteria:* `uvicorn app.main:app --reload` runs cleanly and `GET /health` returns `200 OK`.
+*Exit Criteria:* `uvicorn app.main:app --reload` runs cleanly and `GET /health` returns `200 OK`. ( All criteria met!)
 
 ---
 

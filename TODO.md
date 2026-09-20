@@ -8,7 +8,7 @@ Tracking implementation progress for the **Fraud/Risk Scoring API** project acro
 
 - [x] **Phase 0 — Environment & ML Reproduction** `[9/9]`
 - [x] **Phase 1 — Project Skeleton & Configuration** `[7/7]`
-- [ ] **Phase 2 — Database Layer & Async Migrations** `[5/10]`
+- [ ] **Phase 2 — Database Layer & Async Migrations** `[7/10]`
 - [ ] **Phase 3 — Modern Authentication** `[0/7]`
 - [ ] **Phase 4 — Core Scoring Endpoints** `[0/9]`
 - [ ] **Phase 5 — Error Handling & Resilience** `[0/5]`
@@ -67,8 +67,8 @@ Tracking implementation progress for the **Fraud/Risk Scoring API** project acro
 - [x] **2.3 User ORM Model:** Define `User` model in `app/models/user.py` (`id`, `email`, `hashed_password`, `is_active`, `created_at`).
 - [x] **2.4 Scoring Request ORM Model:** Define `ScoringRequest` model in `app/models/scoring.py` (`id`, `user_id`, `input_features` JSONB, `predicted_probability`, `decision`, `model_version`, `created_at`, `deleted_at`).
 - [x] **2.5 Model Version ORM Model:** Define `ModelVersion` model in `app/models/model_version.py` (`version`, `trained_at`, `reported_auc`, `paper_baseline_auc`, `artifact_path`).
-- [ ] **2.6 Initialize Async Alembic:** Run `alembic init -t async alembic`.
-- [ ] **2.7 Configure Alembic `env.py`:** Import `Base.metadata` and configure `run_migrations_online` for async engine execution.
+- [x] **2.6 Initialize Async Alembic:** Run `alembic init -t async alembic`.
+- [x] **2.7 Configure Alembic `env.py`:** Import `Base.metadata` and configure `run_migrations_online` for async engine execution.
 - [ ] **2.8 Generate Initial Migration:** Run `alembic revision --autogenerate -m "initial schema"`.
 - [ ] **2.9 Apply Migration:** Apply migration to local PostgreSQL (`alembic upgrade head`) and verify tables in DB.
 - [ ] **2.10 Readiness Probe DB Ping:** Add database connectivity check (`SELECT 1`) to `GET /health/ready`.

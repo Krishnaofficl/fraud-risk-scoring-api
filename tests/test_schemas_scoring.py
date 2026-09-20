@@ -76,3 +76,78 @@ def test_dataframe_conversion_and_pipeline_inference():
     assert probs.shape == (1, 2)
     fraud_prob = float(probs[0, 1])
     assert 0.0 <= fraud_prob <= 1.0
+
+
+def test_scoring_result_response_from_dict_and_orm():
+    import uuid
+    from datetime import datetime, timezone
+    from app.schemas.scoring import ScoringResultResponse, RiskDecision
+
+    req_id = uuid.uuid4()
+    now = datetime.now(timezone.utc)
+
+    # 1. From direct dictionary
+    res_dict = ScoringResultResponse(
+        request_id=req_id,
+        probability=0.1850,
+        decision=RiskDecision.APPROVE,
+        model_version="v1-baseline",
+        created_at=now,
+    )
+    assert res_dict.request_id == req_id
+    assert res_dict.probability == 0.1850
+    assert res_dict.decision == "APPROVE"
+
+    # 2. From mock ORM object (with id and predicted_probability)
+    class MockScoringORM:
+        id = req_id
+        predicted_probability = 0.2500
+        decision = "REVIEW"
+        model_version = "v1-baseline"
+        created_at = now
+
+    res_orm = ScoringResultResponse.model_validate(MockScoringORM())
+    assert res_orm.request_id == req_id
+    assert res_orm.probability == 0.2500
+    assert res_orm.decision == "REVIEW"
+
+
+def test_scoring_result_response_validation():
+    import uuid
+    from datetime import datetime, timezone
+    from app.schemas.scoring import ScoringResultResponse
+
+    # Probability > 1.0 rejected
+    with pytest.raises(ValidationError):
+        ScoringResultResponse(
+            request_id=uuid.uuid4(),
+            probability=1.5,
+            decision="DENY",
+            model_version="v1",
+            created_at=datetime.now(timezone.utc),
+        )
+
+
+def test_paginated_scoring_history_response():
+    import uuid
+    from datetime import datetime, timezone
+    from app.schemas.scoring import ScoringResultResponse, PaginatedScoringHistoryResponse
+
+    item = ScoringResultResponse(
+        request_id=uuid.uuid4(),
+        probability=0.35,
+        decision="REVIEW",
+        model_version="v1-baseline",
+        created_at=datetime.now(timezone.utc),
+    )
+    history = PaginatedScoringHistoryResponse(
+        items=[item],
+        total=1,
+        limit=10,
+        offset=0,
+    )
+    assert len(history.items) == 1
+    assert history.total == 1
+    assert history.limit == 10
+    assert history.offset == 0
+

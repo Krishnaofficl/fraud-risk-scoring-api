@@ -1,8 +1,11 @@
 from datetime import date, datetime
+from enum import Enum
 from typing import Any, Dict, Optional, Union
+from uuid import UUID
 import numpy as np
 import pandas as pd
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field, field_validator
+
 
 
 def _parse_duration_to_months(val: Union[int, float, str, None]) -> int:
@@ -194,3 +197,65 @@ class LoanApplicantInput(BaseModel):
         }
 
         return pd.DataFrame([record])
+
+
+class RiskDecision(str, Enum):
+    """Automated risk classification outcomes based on default probability thresholds."""
+    APPROVE = "APPROVE"  # Probability < 0.20
+    REVIEW = "REVIEW"    # Probability 0.20 – 0.40
+    DENY = "DENY"        # Probability > 0.40
+
+
+class ScoringResultResponse(BaseModel):
+    """
+    Standard API response schema for a fraud risk scoring prediction.
+    Supports direct serialization from the ScoringRequest ORM model.
+    """
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
+
+    request_id: UUID = Field(
+        ...,
+        validation_alias=AliasChoices("request_id", "id"),
+        description="Unique transaction identifier for this scoring request",
+    )
+    probability: float = Field(
+        ...,
+        validation_alias=AliasChoices("probability", "predicted_probability"),
+        ge=0.0,
+        le=1.0,
+        description="Predicted probability of loan default (0.0 to 1.0)",
+        examples=[0.1944],
+    )
+    decision: str = Field(
+        ...,
+        description="Automated risk decision outcome: APPROVE (< 0.20), REVIEW (0.20–0.40), DENY (> 0.40)",
+        examples=["APPROVE"],
+    )
+    model_version: str = Field(
+        ...,
+        description="Model version identifier evaluated for inference",
+        examples=["v1-baseline"],
+    )
+    created_at: datetime = Field(
+        ...,
+        description="UTC timestamp when the scoring evaluation was completed",
+    )
+
+
+class ScoringDetailResponse(ScoringResultResponse):
+    """
+    Detailed scoring transaction response including applicant input features and user ID.
+    """
+    user_id: UUID = Field(..., description="ID of the user who submitted the scoring request")
+    input_features: Dict[str, Any] = Field(..., description="Raw applicant input features evaluated")
+
+
+class PaginatedScoringHistoryResponse(BaseModel):
+    """
+    Paginated response container for historical scoring queries.
+    """
+    items: list[ScoringResultResponse] = Field(..., description="List of scoring evaluations")
+    total: int = Field(..., ge=0, description="Total count of matching records across all pages")
+    limit: int = Field(..., ge=1, description="Page limit")
+    offset: int = Field(..., ge=0, description="Page offset")
+

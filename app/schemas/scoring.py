@@ -259,3 +259,17 @@ class PaginatedScoringHistoryResponse(BaseModel):
     limit: int = Field(..., ge=1, description="Page limit")
     offset: int = Field(..., ge=0, description="Page offset")
 
+
+class ModelInfoResponse(BaseModel):
+    """
+    Public metadata response for the active machine learning risk model.
+    """
+    model_config = ConfigDict(from_attributes=True)
+
+    version: str = Field(..., description="Model version identifier", examples=["v1-baseline"])
+    trained_at: datetime = Field(..., description="UTC timestamp when the model was trained")
+    reported_auc: float = Field(..., description="Reproduction holdout test ROC-AUC score", examples=[0.6665])
+    paper_baseline_auc: float = Field(..., description="Amazon FDB published paper baseline ROC-AUC", examples=[0.5180])
+    artifact_path: str = Field(..., description="Filesystem location of the model artifact", examples=["artifacts/model_pipeline.joblib"])
+
+

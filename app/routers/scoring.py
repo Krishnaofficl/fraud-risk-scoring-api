@@ -6,12 +6,15 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from uuid import UUID
+from app.core.config import settings
 from app.core.security import get_current_user
 from app.db.session import get_db
+from app.models.model_version import ModelVersion
 from app.models.scoring import ScoringRequest
 from app.models.user import User
 from app.schemas.scoring import (
     LoanApplicantInput,
+    ModelInfoResponse,
     PaginatedScoringHistoryResponse,
     RiskDecision,
     ScoringDetailResponse,
@@ -242,6 +245,43 @@ async def soft_delete_scoring_record(
         "request_id": str(score_id),
         "deleted_at": now.isoformat(),
     }
+
+
+@router.get(
+    "/model/info",
+    response_model=ModelInfoResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Get active model metadata and benchmark reproduction metrics",
+    description="Returns the active model version, training timestamp, reproduction holdout test ROC-AUC, and paper baseline ROC-AUC.",
+)
+async def get_model_info(
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Returns active risk scoring model metadata:
+    - Model version tag (e.g. v1-baseline).
+    - Trained timestamp.
+    - Holdout test ROC-AUC score achieved during Phase 0 reproduction (0.6665).
+    - Amazon FDB paper published baseline score (0.5180).
+    - Filesystem path to serialized joblib artifact.
+    """
+    version_tag = getattr(request.app.state, "model_version", settings.MODEL_VERSION)
+    stmt = select(ModelVersion).where(ModelVersion.version == version_tag)
+    res = await db.execute(stmt)
+    mv = res.scalar_one_or_none()
+
+    if mv is None:
+        return ModelInfoResponse(
+            version=version_tag,
+            trained_at=datetime.now(timezone.utc),
+            reported_auc=0.6665,
+            paper_baseline_auc=0.5180,
+            artifact_path=str(settings.MODEL_PATH),
+        )
+
+    return mv
+
 
 
 

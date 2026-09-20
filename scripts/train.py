@@ -64,7 +64,9 @@ def load_and_preprocess(data_path: Path):
     # Convert date strings into simple year/month features if present
     for date_col in ["Date.of.Birth", "DisbursalDate"]:
         if date_col in df.columns:
-            dt = pd.to_datetime(df[date_col], format="%d-%m-%Y", errors="coerce")
+            dt = pd.to_datetime(df[date_col], format="%d-%m-%y", errors="coerce")
+            # Correct century for 2-digit years (e.g. 84 -> 1984 rather than 2084)
+            dt = dt.map(lambda d: d.replace(year=d.year - 100) if pd.notna(d) and d.year > 2026 else d)
             df[f"{date_col}_year"] = dt.dt.year
             df[f"{date_col}_month"] = dt.dt.month
             df = df.drop(columns=[date_col])
@@ -72,9 +74,9 @@ def load_and_preprocess(data_path: Path):
     y = df[target_col]
     X = df.drop(columns=[target_col])
 
-    # Categorize column types
-    categorical_cols = [c for c in X.columns if X[c].dtype == "object" or str(X[c].dtype) == "category"]
-    numeric_cols = [c for c in X.columns if c not in categorical_cols]
+    # Categorize column types (compatible with pandas 2.x and 3.x)
+    categorical_cols = list(X.select_dtypes(exclude=["number"]).columns)
+    numeric_cols = list(X.select_dtypes(include=["number"]).columns)
 
     print(f"Features: {len(numeric_cols)} numerical, {len(categorical_cols)} categorical.")
     return X, y, numeric_cols, categorical_cols

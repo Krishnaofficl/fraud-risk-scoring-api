@@ -106,7 +106,7 @@ Tracking implementation progress for the **Fraud/Risk Scoring API** project acro
   - Persist request, features JSONB, probability, decision, and model version to `scoring_requests`.
 - [x] **4.5 GET `/v1/scores` Endpoint:** Paginated history list (`limit`, `offset`) with filters for date range, decision, and score threshold (owner-only, excludes soft-deleted).
 - [x] **4.6 GET `/v1/scores/{id}` Endpoint:** Fetch single scoring request with owner-only authorization check.
-- [ ] **4.7 DELETE `/v1/scores/{id}` Endpoint:** Soft-delete scoring record (updates `deleted_at`) with owner-only authorization check.
+- [x] **4.7 DELETE `/v1/scores/{id}` Endpoint:** Soft-delete scoring record (updates `deleted_at`) with owner-only authorization check.
 - [ ] **4.8 GET `/v1/model/info` Endpoint:** Return active model version, trained timestamp, and reproduced vs. paper baseline AUC.
 - [ ] **4.9 Seed Initial Model Version:** Seed `v1-baseline` record into `model_versions` table on startup or via migration.
 

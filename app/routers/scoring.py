@@ -1,5 +1,5 @@
 import asyncio
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from sqlalchemy import func, select
@@ -197,5 +197,51 @@ async def get_scoring_record(
         )
 
     return record
+
+
+@router.delete(
+    "/scores/{score_id}",
+    status_code=status.HTTP_200_OK,
+    summary="Soft-delete a scoring evaluation by ID",
+    description="Marks a scoring transaction as soft-deleted by setting deleted_at. Strictly owner-only authorization.",
+)
+async def soft_delete_scoring_record(
+    score_id: UUID,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Soft-deletes a scoring record:
+    - Verifies existence and soft-delete status (404 Not Found if missing or already deleted).
+    - Verifies ownership (403 Forbidden if accessed by another user).
+    - Sets deleted_at to current UTC timestamp and commits to PostgreSQL.
+    - Excludes the record from subsequent history listings and lookups.
+    """
+    stmt = select(ScoringRequest).where(ScoringRequest.id == score_id)
+    result = await db.execute(stmt)
+    record = result.scalar_one_or_none()
+
+    if record is None or record.deleted_at is not None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Scoring record not found.",
+        )
+
+    if record.user_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not authorized to delete this scoring evaluation.",
+        )
+
+    now = datetime.now(timezone.utc)
+    record.deleted_at = now
+    await db.commit()
+
+    return {
+        "status": "deleted",
+        "request_id": str(score_id),
+        "deleted_at": now.isoformat(),
+    }
+
 
 

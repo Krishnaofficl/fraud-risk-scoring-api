@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from uuid import UUID
 from app.core.security import get_current_user
 from app.db.session import get_db
 from app.models.scoring import ScoringRequest
@@ -13,6 +14,7 @@ from app.schemas.scoring import (
     LoanApplicantInput,
     PaginatedScoringHistoryResponse,
     RiskDecision,
+    ScoringDetailResponse,
     ScoringResultResponse,
 )
 
@@ -155,4 +157,45 @@ async def get_scoring_history(
         limit=limit,
         offset=offset,
     )
+
+
+@router.get(
+    "/scores/{score_id}",
+    response_model=ScoringDetailResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Get detailed scoring evaluation by ID",
+    description="Fetches a single scoring request by its unique UUID. Strictly owner-only authorization.",
+)
+async def get_scoring_record(
+    score_id: UUID,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Fetches a specific scoring transaction:
+    - Verifies existence and soft-delete status (404 Not Found if missing or deleted).
+    - Verifies ownership (403 Forbidden if accessed by a different user).
+    - Returns full evaluation details including input_features JSONB.
+    """
+    stmt = select(ScoringRequest).where(
+        ScoringRequest.id == score_id,
+        ScoringRequest.deleted_at.is_(None),
+    )
+    result = await db.execute(stmt)
+    record = result.scalar_one_or_none()
+
+    if record is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Scoring record not found.",
+        )
+
+    if record.user_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not authorized to access this scoring evaluation.",
+        )
+
+    return record
+
 

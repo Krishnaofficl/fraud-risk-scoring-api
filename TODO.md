@@ -119,7 +119,7 @@ Tracking implementation progress for the **Fraud/Risk Scoring API** project acro
 
 - [x] **5.1 Standardized Error Envelope:** Define uniform error schema (`detail`, `error_code`, `request_id`, `timestamp`).
 - [x] **5.2 Custom Exceptions:** Define domain exceptions (`DatabaseUnavailableException`, `ModelNotLoadedException`, `EntityNotFoundException`).
-- [ ] **5.3 Global Exception Handlers:** Register handlers for `RequestValidationError`, `HTTPException`, and uncaught exceptions.
+- [x] **5.3 Global Exception Handlers:** Register handlers for `RequestValidationError`, `HTTPException`, and uncaught exceptions.
 - [ ] **5.4 Readiness Degradation Check:** Ensure `GET /health/ready` returns `HTTP 503 Service Unavailable` if database is down or model pipeline is missing from memory.
 - [ ] **5.5 Live Resilience Verification:** Stop PostgreSQL mid-session and verify the API returns clean 503 JSON without leaking stack traces.
 

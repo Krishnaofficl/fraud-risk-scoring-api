@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from sqlalchemy import select
 
 from app.core.config import ROOT_DIR, settings
+from app.core.error_handlers import register_exception_handlers
 from app.db.session import async_session_maker
 from app.models.model_version import ModelVersion
 from app.routers import auth, health, scoring, users
@@ -68,6 +69,9 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc",
 )
+
+# Register Global Exception Handlers
+register_exception_handlers(app)
 
 # Mount Routers
 app.include_router(health.router)

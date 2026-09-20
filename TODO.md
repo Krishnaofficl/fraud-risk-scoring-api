@@ -7,7 +7,7 @@ Tracking implementation progress for the **Fraud/Risk Scoring API** project acro
 ## Progress Overview
 
 - [x] **Phase 0 — Environment & ML Reproduction** `[9/9]`
-- [ ] **Phase 1 — Project Skeleton & Configuration** `[0/7]`
+- [ ] **Phase 1 — Project Skeleton & Configuration** `[4/7]`
 - [ ] **Phase 2 — Database Layer & Async Migrations** `[0/10]`
 - [ ] **Phase 3 — Modern Authentication** `[0/7]`
 - [ ] **Phase 4 — Core Scoring Endpoints** `[0/9]`
@@ -47,10 +47,10 @@ Tracking implementation progress for the **Fraud/Risk Scoring API** project acro
 ## Phase 1 — Project Skeleton & Configuration
 > **Goal:** Minimal runnable FastAPI application with robust environment configuration and liveness probe.
 
-- [ ] **1.1 Git Initialization:** Initialize git repository, configure `main` branch.
-- [ ] **1.2 Gitignore Verification:** Ensure `.gitignore` correctly ignores `.env`, `data/raw/*.csv`, `artifacts/*.joblib`, and `__pycache__`.
-- [ ] **1.3 Settings Configuration:** Implement `app/core/config.py` using `pydantic-settings` (`BaseSettings`).
-- [ ] **1.4 Database URL Normalizer:** Add `@field_validator` in settings to automatically convert `postgres://` / `postgresql://` to `postgresql+asyncpg://`.
+- [x] **1.1 Git Initialization:** Initialize git repository, configure `main` branch (Completed in 0.0).
+- [x] **1.2 Gitignore Verification:** Ensure `.gitignore` correctly ignores `.env`, `data/raw/*.csv`, `artifacts/*.joblib`, and `__pycache__` (Verified).
+- [x] **1.3 Settings Configuration:** Implement `app/core/config.py` using `pydantic-settings` (`BaseSettings`).
+- [x] **1.4 Database URL Normalizer:** Add `@field_validator` in settings to automatically convert `postgres://` / `postgresql://` to `postgresql+asyncpg://`.
 - [ ] **1.5 Environment Template:** Create local `.env` from `.env.example`.
 - [ ] **1.6 FastAPI Lifespan & App Factory:** Set up `app/main.py` with `@asynccontextmanager` lifespan.
 - [ ] **1.7 Liveness Probe:** Implement `GET /health` returning `{"status": "ok"}`.

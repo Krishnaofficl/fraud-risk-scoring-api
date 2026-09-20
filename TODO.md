@@ -80,7 +80,7 @@ Tracking implementation progress for the **Fraud/Risk Scoring API** project acro
 ## Phase 3 — Modern Authentication
 > **Goal:** Secure user registration, password hashing with bcrypt, JWT token generation with pyjwt, and route guarding.
 
-- [ ] **3.1 Password Security:** Implement `hash_password` and `verify_password` using `bcrypt` in `app/core/security.py`.
+- [x] **3.1 Password Security:** Implement `hash_password` and `verify_password` using `pwdlib` (Argon2id) in `app/core/security.py`.
 - [ ] **3.2 JWT Token Utilities:** Implement `create_access_token` and `decode_access_token` using `pyjwt[crypto]`.
 - [ ] **3.3 Auth Schemas:** Define `UserRegister`, `UserLogin`, `TokenResponse`, and `UserResponse` Pydantic schemas in `app/schemas/auth.py`.
 - [ ] **3.4 Registration Endpoint:** Implement `POST /auth/register` (hashes password, handles email uniqueness, stores user).

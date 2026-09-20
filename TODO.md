@@ -70,7 +70,7 @@ Tracking implementation progress for the **Fraud/Risk Scoring API** project acro
 - [x] **2.6 Initialize Async Alembic:** Run `alembic init -t async alembic`.
 - [x] **2.7 Configure Alembic `env.py`:** Import `Base.metadata` and configure `run_migrations_online` for async engine execution.
 - [x] **2.8 Generate Initial Migration:** Run `alembic revision --autogenerate -m "initial schema"`.
-- [ ] **2.9 Apply Migration:** Apply migration to local PostgreSQL (`alembic upgrade head`) and verify tables in DB.
+- [x] **2.9 Apply Migration:** Apply migration to local PostgreSQL (`alembic upgrade head`) and verify tables in DB.
 - [ ] **2.10 Readiness Probe DB Ping:** Add database connectivity check (`SELECT 1`) to `GET /health/ready`.
 
 *Exit Criteria:* Migrations apply cleanly to Postgres; `GET /health/ready` reports real database connection health.

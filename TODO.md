@@ -86,9 +86,9 @@ Tracking implementation progress for the **Fraud/Risk Scoring API** project acro
 - [x] **3.4 Registration Endpoint:** Implement `POST /auth/register` (hashes password, handles email uniqueness, stores user).
 - [x] **3.5 Login Endpoint:** Implement `POST /auth/login` (verifies credentials, returns Bearer JWT).
 - [x] **3.6 Auth Dependency:** Create `get_current_user` FastAPI dependency extracting and validating the Bearer token.
-- [ ] **3.7 User Profile Endpoint:** Implement protected `GET /v1/users/me` returning current user profile.
+- [x] **3.7 User Profile Endpoint:** Implement protected `GET /v1/users/me` returning current user profile.
 
-*Exit Criteria:* Can register, log in, receive a valid JWT, and authenticate against `/v1/users/me`; invalid/expired tokens return 401 Unauthorized.
+*Exit Criteria:* Can register, log in, receive a valid JWT, and authenticate against `/v1/users/me`; invalid/expired tokens return 401 Unauthorized. ( All criteria met!)
 
 ---
 

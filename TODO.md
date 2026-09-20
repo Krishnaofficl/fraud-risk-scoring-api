@@ -81,7 +81,7 @@ Tracking implementation progress for the **Fraud/Risk Scoring API** project acro
 > **Goal:** Secure user registration, password hashing with bcrypt, JWT token generation with pyjwt, and route guarding.
 
 - [x] **3.1 Password Security:** Implement `hash_password` and `verify_password` using `pwdlib` (Argon2id) in `app/core/security.py`.
-- [ ] **3.2 JWT Token Utilities:** Implement `create_access_token` and `decode_access_token` using `pyjwt[crypto]`.
+- [x] **3.2 JWT Token Utilities:** Implement `create_access_token` and `decode_access_token` using `pyjwt[crypto]`.
 - [ ] **3.3 Auth Schemas:** Define `UserRegister`, `UserLogin`, `TokenResponse`, and `UserResponse` Pydantic schemas in `app/schemas/auth.py`.
 - [ ] **3.4 Registration Endpoint:** Implement `POST /auth/register` (hashes password, handles email uniqueness, stores user).
 - [ ] **3.5 Login Endpoint:** Implement `POST /auth/login` (verifies credentials, returns Bearer JWT).

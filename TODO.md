@@ -104,7 +104,7 @@ Tracking implementation progress for the **Fraud/Risk Scoring API** project acro
   - Execute non-blocking inference via `await asyncio.to_thread(pipeline.predict_proba, input_df)`.
   - Apply risk decision threshold (`< 0.20`: APPROVE, `0.20–0.40`: REVIEW, `> 0.40`: DENY).
   - Persist request, features JSONB, probability, decision, and model version to `scoring_requests`.
-- [ ] **4.5 GET `/v1/scores` Endpoint:** Paginated history list (`limit`, `offset`) with filters for date range, decision, and score threshold (owner-only, excludes soft-deleted).
+- [x] **4.5 GET `/v1/scores` Endpoint:** Paginated history list (`limit`, `offset`) with filters for date range, decision, and score threshold (owner-only, excludes soft-deleted).
 - [ ] **4.6 GET `/v1/scores/{id}` Endpoint:** Fetch single scoring request with owner-only authorization check.
 - [ ] **4.7 DELETE `/v1/scores/{id}` Endpoint:** Soft-delete scoring record (updates `deleted_at`) with owner-only authorization check.
 - [ ] **4.8 GET `/v1/model/info` Endpoint:** Return active model version, trained timestamp, and reproduced vs. paper baseline AUC.

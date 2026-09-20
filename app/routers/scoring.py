@@ -1,12 +1,20 @@
 import asyncio
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from datetime import datetime
+from typing import Optional
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.security import get_current_user
 from app.db.session import get_db
 from app.models.scoring import ScoringRequest
 from app.models.user import User
-from app.schemas.scoring import LoanApplicantInput, RiskDecision, ScoringResultResponse
+from app.schemas.scoring import (
+    LoanApplicantInput,
+    PaginatedScoringHistoryResponse,
+    RiskDecision,
+    ScoringResultResponse,
+)
 
 router = APIRouter(prefix="/v1", tags=["Scoring"])
 
@@ -80,3 +88,71 @@ async def score_applicant(
     await db.refresh(scoring_record)
 
     return scoring_record
+
+
+@router.get(
+    "/scores",
+    response_model=PaginatedScoringHistoryResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Get paginated history of scoring evaluations",
+    description=(
+        "Retrieves a paginated list of scoring transactions submitted by the authenticated user. "
+        "Excludes soft-deleted records and supports filtering by decision, score threshold, and date range."
+    ),
+)
+async def get_scoring_history(
+    limit: int = Query(default=10, ge=1, le=100, description="Page size limit"),
+    offset: int = Query(default=0, ge=0, description="Page offset"),
+    decision: Optional[str] = Query(default=None, description="Filter by decision: APPROVE, REVIEW, DENY"),
+    min_score: Optional[float] = Query(default=None, ge=0.0, le=1.0, description="Minimum predicted probability"),
+    max_score: Optional[float] = Query(default=None, ge=0.0, le=1.0, description="Maximum predicted probability"),
+    start_date: Optional[datetime] = Query(default=None, description="Filter records created on or after this timestamp"),
+    end_date: Optional[datetime] = Query(default=None, description="Filter records created on or before this timestamp"),
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Returns paginated scoring history for the authenticated user:
+    - Strictly owner-only isolation (current_user.id).
+    - Automatically filters out soft-deleted evaluations (deleted_at IS NULL).
+    - Supports dynamic filters: decision, score bounds, and date intervals.
+    """
+    conditions = [
+        ScoringRequest.user_id == current_user.id,
+        ScoringRequest.deleted_at.is_(None),
+    ]
+
+    if decision:
+        conditions.append(ScoringRequest.decision == decision.upper())
+    if min_score is not None:
+        conditions.append(ScoringRequest.predicted_probability >= min_score)
+    if max_score is not None:
+        conditions.append(ScoringRequest.predicted_probability <= max_score)
+    if start_date is not None:
+        conditions.append(ScoringRequest.created_at >= start_date)
+    if end_date is not None:
+        conditions.append(ScoringRequest.created_at <= end_date)
+
+    # 1. Total matching count
+    count_stmt = select(func.count()).select_from(ScoringRequest).where(*conditions)
+    total_result = await db.execute(count_stmt)
+    total_count = total_result.scalar() or 0
+
+    # 2. Paginated items
+    items_stmt = (
+        select(ScoringRequest)
+        .where(*conditions)
+        .order_by(ScoringRequest.created_at.desc())
+        .limit(limit)
+        .offset(offset)
+    )
+    items_result = await db.execute(items_stmt)
+    records = list(items_result.scalars().all())
+
+    return PaginatedScoringHistoryResponse(
+        items=records,
+        total=total_count,
+        limit=limit,
+        offset=offset,
+    )
+

@@ -1,12 +1,22 @@
+import uuid
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, Optional
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
 import jwt
 from pwdlib import PasswordHash
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
+from app.db.session import get_db
+from app.models.user import User
 
 # Initialize modern recommended password hasher (Argon2id)
 password_hasher = PasswordHash.recommended()
+
+# OAuth2 password bearer token scheme pointing to /auth/login
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
 def hash_password(password: str) -> str:
@@ -55,4 +65,45 @@ def decode_access_token(token: str) -> Dict[str, Any]:
         settings.JWT_SECRET,
         algorithms=[settings.JWT_ALGORITHM],
     )
+
+
+async def get_current_user(
+    token: str = Depends(oauth2_scheme),
+    db: AsyncSession = Depends(get_db),
+) -> User:
+    """
+    FastAPI dependency that extracts and validates the Bearer JWT token from the Authorization header.
+    Retrieves the corresponding User entity from PostgreSQL and ensures the account is active.
+    Raises 401 Unauthorized for expired, invalid, or missing credentials.
+    Raises 403 Forbidden if the user account is inactive.
+    """
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = decode_access_token(token)
+        user_id_str: Optional[str] = payload.get("sub")
+        if not user_id_str:
+            raise credentials_exception
+        user_uuid = uuid.UUID(user_id_str)
+    except (jwt.InvalidTokenError, ValueError):
+        raise credentials_exception
+
+    stmt = select(User).where(User.id == user_uuid)
+    result = await db.execute(stmt)
+    user = result.scalar_one_or_none()
+
+    if user is None:
+        raise credentials_exception
+
+    if not user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Inactive user account",
+        )
+
+    return user
+
 

@@ -17,7 +17,9 @@ class Settings(BaseSettings):
     ENVIRONMENT: str = "development"
     DEBUG: bool = True
     PORT: int = 8000
-    HOST: str = "0.0.0.0"
+    # Logging Configuration
+    LOG_LEVEL: str = "INFO"
+    LOG_JSON_FORMAT: bool = False  # Set to True for production JSON log output
 
     # Database Configuration
     DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/fraud_db"

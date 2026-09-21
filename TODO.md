@@ -132,7 +132,7 @@ Tracking implementation progress for the **Fraud/Risk Scoring API** project acro
 > **Goal:** Distributed request tracing and machine-parseable JSON logs.
 
 - [x] **6.1 Correlation ID Middleware:** Add `asgi-correlation-id` to capture or generate `X-Request-ID` on incoming requests.
-- [ ] **6.2 Structlog Configuration:** Set up `structlog` in `app/core/logging.py` emitting structured JSON logs with timestamp, level, event, and correlation ID.
+- [x] **6.2 Structlog Configuration:** Set up `structlog` in `app/core/logging.py` emitting structured JSON logs with timestamp, level, event, and correlation ID.
 - [ ] **6.3 Contextual Request Logging:** Log HTTP request method, path, status code, latency, and client IP.
 - [ ] **6.4 Audit Events:** Add structured log events for authentication attempts, scoring decisions (excluding PII), and system exceptions.
 

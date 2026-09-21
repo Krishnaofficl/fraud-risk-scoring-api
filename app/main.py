@@ -9,9 +9,14 @@ from asgi_correlation_id import CorrelationIdMiddleware
 
 from app.core.config import ROOT_DIR, settings
 from app.core.error_handlers import register_exception_handlers
+from app.core.logging import setup_logging, get_logger
 from app.db.session import async_session_maker
 from app.models.model_version import ModelVersion
 from app.routers import auth, health, scoring, users
+
+# Initialize structured logging subsystem
+setup_logging()
+logger = get_logger("app.main")
 
 
 @asynccontextmanager
@@ -32,10 +37,10 @@ async def lifespan(app: FastAPI):
             f"Model artifact not found at '{model_path}'. Ensure train.py has been run."
         )
 
-    print(f"Loading ML model artifact from {model_path}...")
+    logger.info("loading_model_pipeline", model_path=str(model_path))
     app.state.model_pipeline = joblib.load(model_path)
     app.state.model_version = settings.MODEL_VERSION
-    print(f"ML Model pipeline '{settings.MODEL_VERSION}' loaded successfully.")
+    logger.info("model_pipeline_loaded", model_version=settings.MODEL_VERSION)
 
     # 2. Ensure model version metadata is registered in DB (satisfying foreign key constraints)
     try:
@@ -52,14 +57,14 @@ async def lifespan(app: FastAPI):
                 )
                 session.add(mv)
                 await session.commit()
-                print(f"Registered model version '{settings.MODEL_VERSION}' in database.")
+                logger.info("registered_model_version_in_db", model_version=settings.MODEL_VERSION)
     except Exception as exc:
-        print(f"Notice: Model version DB sync skipped or deferred ({exc}).")
+        logger.warning("model_version_db_sync_deferred", error=str(exc))
 
     yield
 
     # 3. Shutdown logic
-    print(f"Shutting down {settings.PROJECT_NAME}...")
+    logger.info("shutting_down_application", project=settings.PROJECT_NAME)
     app.state.model_pipeline = None
 
 

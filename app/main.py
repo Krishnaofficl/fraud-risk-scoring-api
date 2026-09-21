@@ -77,13 +77,16 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
-# Mount Correlation ID Middleware (propagating standard UUIDv4)
+# Mount Middleware Stack
 import uuid
+from app.core.logging import RequestLoggingMiddleware
 
+app.add_middleware(RequestLoggingMiddleware)
 app.add_middleware(
     CorrelationIdMiddleware,
     header_name="X-Request-ID",
     update_request_header=True,
+    validator=None,
     generator=lambda: str(uuid.uuid4()),
 )
 

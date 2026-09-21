@@ -79,3 +79,54 @@ def setup_logging() -> None:
 def get_logger(name: Optional[str] = None) -> structlog.stdlib.BoundLogger:
     """Convenience accessor to obtain a bound structlog logger."""
     return structlog.get_logger(name)
+
+
+import time
+
+
+class RequestLoggingMiddleware:
+    """
+    Pure ASGI middleware measuring HTTP request latency and emitting structured
+    JSON logs for every completed request (method, path, status_code, latency_ms, client_ip).
+    """
+
+    def __init__(self, app: Any):
+        self.app = app
+        self.logger = structlog.get_logger("app.access")
+
+    async def __call__(self, scope: dict[str, Any], receive: Any, send: Any) -> None:
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
+
+        start_time = time.perf_counter()
+        status_code = 500
+
+        async def send_wrapper(message: dict[str, Any]) -> None:
+            nonlocal status_code
+            if message["type"] == "http.response.start":
+                status_code = message["status"]
+            await send(message)
+
+        try:
+            await self.app(scope, receive, send_wrapper)
+        finally:
+            latency_ms = round((time.perf_counter() - start_time) * 1000, 2)
+            path = scope.get("path", "")
+            method = scope.get("method", "")
+            client = scope.get("client")
+            client_ip = client[0] if client else None
+
+            # Filter static asset chatter
+            if path.startswith("/static/"):
+                return
+
+            self.logger.info(
+                "http_request_finished",
+                http_method=method,
+                path=path,
+                status_code=status_code,
+                latency_ms=latency_ms,
+                client_ip=client_ip,
+            )
+

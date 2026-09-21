@@ -3,12 +3,14 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
+from app.core.logging import get_logger
 from app.core.security import create_access_token, hash_password, verify_password
 from app.db.session import get_db
 from app.models.user import User
 from app.schemas.auth import TokenResponse, UserLogin, UserRegister, UserResponse
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
+logger = get_logger("app.audit.auth")
 
 
 @router.post(
@@ -35,6 +37,7 @@ async def register(
     existing_user = result.scalar_one_or_none()
 
     if existing_user is not None:
+        logger.warning("auth_register_conflict", email=payload.email)
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="A user with this email address already exists.",
@@ -53,6 +56,7 @@ async def register(
     await db.commit()
     await db.refresh(new_user)
 
+    logger.info("auth_register_success", user_id=str(new_user.id), email=new_user.email)
     return new_user
 
 
@@ -81,6 +85,7 @@ async def login(
 
     # 2. Verify existence and password
     if user is None or not verify_password(payload.password, user.hashed_password):
+        logger.warning("auth_login_failed", email=payload.email, reason="invalid_credentials")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid email or password.",
@@ -89,6 +94,7 @@ async def login(
 
     # 3. Check if user is active
     if not user.is_active:
+        logger.warning("auth_login_failed", email=payload.email, user_id=str(user.id), reason="inactive_account")
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="User account is inactive.",
@@ -99,6 +105,7 @@ async def login(
         data={"sub": str(user.id), "email": user.email}
     )
 
+    logger.info("auth_login_success", user_id=str(user.id), email=user.email)
     return TokenResponse(
         access_token=token,
         token_type="bearer",

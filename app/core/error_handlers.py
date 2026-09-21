@@ -7,9 +7,10 @@ from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.core.exceptions import AppException
+from app.core.logging import get_logger
 from app.schemas.error import ErrorResponse
 
-logger = logging.getLogger("app.core.error_handlers")
+logger = get_logger("app.core.error_handlers")
 
 STATUS_TO_ERROR_CODE: dict[int, str] = {
     400: "BAD_REQUEST",
@@ -50,11 +51,12 @@ async def app_exception_handler(request: Request, exc: AppException) -> JSONResp
     Produces a standardized ErrorResponse envelope.
     """
     logger.warning(
-        "Application domain exception [%s] on %s %s: %s",
-        exc.error_code,
-        request.method,
-        request.url.path,
-        exc.message,
+        "app_domain_exception",
+        error_code=exc.error_code,
+        status_code=exc.status_code,
+        http_method=request.method,
+        path=request.url.path,
+        message=exc.message,
     )
     request_id = _extract_request_id(request)
     error_payload = ErrorResponse(
@@ -77,10 +79,10 @@ async def validation_exception_handler(
     Standardizes the error structure while preserving field-level validation details.
     """
     logger.info(
-        "Validation error on %s %s: %s",
-        request.method,
-        request.url.path,
-        exc.errors(),
+        "request_validation_failed",
+        http_method=request.method,
+        path=request.url.path,
+        errors_count=len(exc.errors()),
     )
     request_id = _extract_request_id(request)
     encoded_errors = jsonable_encoder(exc.errors())
@@ -134,10 +136,10 @@ async def unhandled_exception_handler(
     or sensitive system internals to clients.
     """
     logger.error(
-        "Unhandled exception on %s %s: %s",
-        request.method,
-        request.url.path,
-        str(exc),
+        "unhandled_system_exception",
+        http_method=request.method,
+        path=request.url.path,
+        error=str(exc),
         exc_info=True,
     )
     request_id = _extract_request_id(request)

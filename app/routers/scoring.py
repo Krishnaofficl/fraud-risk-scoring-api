@@ -7,11 +7,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from uuid import UUID
 from app.core.config import settings
+from app.core.logging import get_logger
 from app.core.security import get_current_user
 from app.db.session import get_db
 from app.models.model_version import ModelVersion
 from app.models.scoring import ScoringRequest
 from app.models.user import User
+
+logger = get_logger("app.audit.scoring")
 from app.schemas.scoring import (
     LoanApplicantInput,
     ModelInfoResponse,
@@ -91,6 +94,19 @@ async def score_applicant(
     db.add(scoring_record)
     await db.commit()
     await db.refresh(scoring_record)
+
+    logger.info(
+        "scoring_decision_rendered",
+        score_id=str(scoring_record.id),
+        user_id=str(current_user.id),
+        model_version=model_version,
+        decision=decision,
+        predicted_probability=round(prob_default, 4),
+        disbursed_amount=applicant.disbursed_amount,
+        asset_cost=applicant.asset_cost,
+        ltv=applicant.ltv,
+        bureau_score=applicant.perform_cns_score,
+    )
 
     return scoring_record
 
@@ -239,6 +255,12 @@ async def soft_delete_scoring_record(
     now = datetime.now(timezone.utc)
     record.deleted_at = now
     await db.commit()
+
+    logger.info(
+        "scoring_evaluation_deleted",
+        score_id=str(score_id),
+        user_id=str(current_user.id),
+    )
 
     return {
         "status": "deleted",

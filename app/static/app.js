@@ -236,8 +236,8 @@ async function checkAuthStatus() {
         sidebarProfile.innerHTML = `
             <p style="color: #666; font-size: 11px;">Not currently authenticated.</p>
             <div style="margin-top: 8px;">
-                <button class="cf-button" onclick="openModal('loginModal')">Sign In</button>
-                <button class="cf-button-secondary" onclick="openModal('registerModal')" style="margin-left: 6px;">Register</button>
+                <a href="/login" class="cf-button" style="text-decoration: none;">Sign In</a>
+                <a href="/register" class="cf-button-secondary" style="margin-left: 6px; text-decoration: none;">Register</a>
             </div>
         `;
         return;
@@ -379,8 +379,7 @@ async function handleScoreSubmit(event) {
     // Ensure user has auth token
     let token = getToken();
     if (!token) {
-        openModal("loginModal");
-        alertBox.textContent = "Please sign in or register to submit loan scoring evaluations.";
+        alertBox.innerHTML = `Please <a href="/login">sign in</a> or <a href="/register">register</a> to submit loan scoring evaluations.`;
         alertBox.style.display = "block";
         return;
     }

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - FraudScope</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="auth-page-container">
+
+        <!-- Header with Green, Blue, Red logo -->
+        <header class="top-header" style="justify-content: center; margin-bottom: 20px;">
+            <a href="/" class="logo-area" style="text-decoration: none;">
+                <div class="cf-logo-bars">
+                    <div class="cf-bar cf-bar-green"></div>
+                    <div class="cf-bar cf-bar-blue"></div>
+                    <div class="cf-bar cf-bar-red"></div>
+                </div>
+                <div>
+                    <span class="site-title">FraudScope</span>
+                    <span class="site-subtitle">| Risk Scoring Portal</span>
+                </div>
+            </a>
+        </header>
+
+        <!-- Register Roundbox -->
+        <div class="roundbox">
+            <div class="roundbox-caption">
+                <span>Register Account on FraudScope</span>
+                <a href="/" style="font-size: 11px; font-weight: normal;">&larr; Back to Home</a>
+            </div>
+            <div class="roundbox-body" style="padding: 20px;">
+                <div id="registerAlert" class="alert-message alert-error"></div>
+                
+                <form id="standaloneRegisterForm" onsubmit="handleStandaloneRegister(e)">
+                    <div class="form-group" style="margin-bottom: 12px;">
+                        <label>Email Address:</label>
+                        <input type="email" id="registerEmail" class="cf-input" required placeholder="analyst@example.com" autofocus>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 16px;">
+                        <label>Password (min 8 characters):</label>
+                        <input type="password" id="registerPassword" class="cf-input" required placeholder="SuperPassword123!">
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <button type="submit" id="btnRegister" class="cf-button">
+                            <span>Create Account</span>
+                        </button>
+                        <span style="font-size: 11px;">
+                            Already registered? <a href="/login">Sign In</a>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <footer class="site-footer" style="margin-top: 15px; border-top: none;">
+            <p>FraudScope &bull; Vehicle Loan Risk Benchmark</p>
+        </footer>
+
+    </div>
+
+    <script>
+        async function handleStandaloneRegister(e) {
+            e.preventDefault();
+            const alertBox = document.getElementById("registerAlert");
+            const btn = document.getElementById("btnRegister");
+            alertBox.style.display = "none";
+            btn.disabled = true;
+
+            const email = document.getElementById("registerEmail").value;
+            const password = document.getElementById("registerPassword").value;
+
+            try {
+                const res = await fetch("/auth/register", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    // Auto-login upon successful registration
+                    const loginRes = await fetch("/auth/login", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ email, password })
+                    });
+                    const loginData = await loginRes.json();
+                    if (loginRes.ok) {
+                        localStorage.setItem("cf_jwt_token", loginData.access_token);
+                    }
+                    window.location.href = "/";
+                } else {
+                    alertBox.textContent = data.message || data.detail || "Registration failed.";
+                    alertBox.style.display = "block";
+                }
+            } catch (err) {
+                alertBox.textContent = "Network error connecting to API.";
+                alertBox.style.display = "block";
+            } finally {
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

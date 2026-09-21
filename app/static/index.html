@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FraudForces - Vehicle Loan Risk Benchmark</title>
+    <title>FraudScope - Vehicle Loan Risk Benchmark</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
@@ -13,12 +13,12 @@
         <header class="top-header">
             <div class="logo-area">
                 <div class="cf-logo-bars">
+                    <div class="cf-bar cf-bar-green"></div>
                     <div class="cf-bar cf-bar-blue"></div>
-                    <div class="cf-bar cf-bar-yellow"></div>
                     <div class="cf-bar cf-bar-red"></div>
                 </div>
                 <div>
-                    <span class="site-title">FraudForces</span>
+                    <span class="site-title">FraudScope</span>
                     <span class="site-subtitle">| Risk Scoring Portal</span>
                 </div>
             </div>
@@ -26,9 +26,9 @@
             <!-- User Auth Status -->
             <div class="user-account-bar" id="userAccountBar">
                 <span id="authGuestView">
-                    <a href="javascript:void(0)" onclick="openModal('loginModal')">Enter</a>
+                    <a href="/login">Enter</a>
                     &nbsp;|&nbsp;
-                    <a href="javascript:void(0)" onclick="openModal('registerModal')">Register</a>
+                    <a href="/register">Register</a>
                 </span>
                 <span id="authUserView" style="display: none;">
                     <span id="userRankTitle" class="user-handle rank-specialist"></span>
@@ -80,7 +80,7 @@
                 <section id="viewSubmit">
                     <div class="roundbox">
                         <div class="roundbox-caption">
-                            <span>// Submit Loan Application for Risk Scoring</span>
+                            <span>Submit Loan Application for Risk Scoring</span>
                             <span style="font-size: 11px; font-weight: normal; color: #555;">Model: v1-baseline</span>
                         </div>
                         <div class="roundbox-body">
@@ -201,7 +201,7 @@
                 <section id="viewHistory" style="display: none;">
                     <div class="roundbox">
                         <div class="roundbox-caption">
-                            <span>// Submission Status & Audit History</span>
+                            <span>Submission Status & Audit History</span>
                             <div style="display: flex; gap: 8px; align-items: center;">
                                 <select id="filterDecision" class="cf-select" style="padding: 2px 6px; font-size: 11px;" onchange="loadSubmissions(1)">
                                     <option value="">All Decisions</option>
@@ -229,7 +229,7 @@
                                     <tbody id="submissionsTableBody">
                                         <tr>
                                             <td colspan="7" style="text-align: center; color: #777; padding: 20px;">
-                                                Please authenticate to view user submissions.
+                                                Please <a href="/login">Sign In</a> to view your submissions history.
                                             </td>
                                         </tr>
                                     </tbody>
@@ -250,7 +250,7 @@
                 <section id="viewModel" style="display: none;">
                     <div class="roundbox">
                         <div class="roundbox-caption">
-                            <span>// Machine Learning Benchmark Specification</span>
+                            <span>Machine Learning Benchmark Specification</span>
                         </div>
                         <div class="roundbox-body">
                             <ul class="sidebar-list" style="font-size: 13px;">
@@ -275,13 +275,13 @@
                 <!-- User Profile Roundbox -->
                 <div class="roundbox">
                     <div class="roundbox-caption">
-                        <span>// Session Profile</span>
+                        <span>Session Profile</span>
                     </div>
                     <div class="roundbox-body" id="sidebarProfileBody">
                         <p style="color: #666; font-size: 11px;">Not currently authenticated.</p>
                         <div style="margin-top: 8px;">
-                            <button class="cf-button" onclick="openModal('loginModal')">Sign In</button>
-                            <button class="cf-button-secondary" onclick="openModal('registerModal')" style="margin-left: 6px;">Register</button>
+                            <a href="/login" class="cf-button" style="text-decoration: none;">Sign In</a>
+                            <a href="/register" class="cf-button-secondary" style="margin-left: 6px; text-decoration: none;">Register</a>
                         </div>
                     </div>
                 </div>
@@ -289,7 +289,7 @@
                 <!-- Decision Rules Roundbox -->
                 <div class="roundbox">
                     <div class="roundbox-caption">
-                        <span>// Risk Decision Rules</span>
+                        <span>Risk Decision Rules</span>
                     </div>
                     <div class="roundbox-body">
                         <ul class="sidebar-list">
@@ -312,7 +312,7 @@
                 <!-- System Health Roundbox -->
                 <div class="roundbox">
                     <div class="roundbox-caption">
-                        <span>// System Health</span>
+                        <span>System Health</span>
                         <button type="button" class="cf-button-secondary" onclick="checkHealth()" style="padding: 1px 6px;">Ping</button>
                     </div>
                     <div class="roundbox-body">
@@ -328,7 +328,7 @@
                 <!-- Fast Preset Actions -->
                 <div class="roundbox">
                     <div class="roundbox-caption">
-                        <span>// Quick Actions</span>
+                        <span>Quick Actions</span>
                     </div>
                     <div class="roundbox-body">
                         <div style="display: flex; flex-direction: column; gap: 6px;">
@@ -344,66 +344,12 @@
 
         <!-- Footer -->
         <footer class="site-footer">
-            <p>FraudForces &bull; Amazon FDB Vehicle Loan Risk Scoring System &bull; FastAPI + PostgreSQL + Scikit-Learn + XGBoost</p>
+            <p>FraudScope &bull; Amazon FDB Vehicle Loan Risk Scoring System &bull; FastAPI + PostgreSQL + Scikit-Learn + XGBoost</p>
         </footer>
 
     </div>
 
-    <!-- Login Modal -->
-    <div id="loginModal" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-caption">
-                <span>Enter / Sign In</span>
-                <span class="modal-close" onclick="closeModal('loginModal')">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div id="loginAlert" class="alert-message alert-error"></div>
-                <form onsubmit="handleLoginSubmit(event)">
-                    <div class="form-group" style="margin-bottom: 10px;">
-                        <label>Email Address:</label>
-                        <input type="email" id="loginEmail" class="cf-input" required placeholder="analyst@example.com">
-                    </div>
-                    <div class="form-group" style="margin-bottom: 14px;">
-                        <label>Password:</label>
-                        <input type="password" id="loginPassword" class="cf-input" required placeholder="••••••••">
-                    </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <button type="submit" class="cf-button">Sign In</button>
-                        <span style="font-size: 11px;">Don't have an account? <a href="javascript:void(0)" onclick="closeModal('loginModal'); openModal('registerModal')">Register</a></span>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Register Modal -->
-    <div id="registerModal" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-caption">
-                <span>Register New Account</span>
-                <span class="modal-close" onclick="closeModal('registerModal')">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div id="registerAlert" class="alert-message alert-error"></div>
-                <form onsubmit="handleRegisterSubmit(event)">
-                    <div class="form-group" style="margin-bottom: 10px;">
-                        <label>Email Address:</label>
-                        <input type="email" id="registerEmail" class="cf-input" required placeholder="new_analyst@example.com">
-                    </div>
-                    <div class="form-group" style="margin-bottom: 14px;">
-                        <label>Password (min 8 chars):</label>
-                        <input type="password" id="registerPassword" class="cf-input" required placeholder="SuperSecretPassword123!">
-                    </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <button type="submit" class="cf-button">Register</button>
-                        <span style="font-size: 11px;">Already registered? <a href="javascript:void(0)" onclick="closeModal('registerModal'); openModal('loginModal')">Sign In</a></span>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Details Modal -->
+    <!-- Details Modal (for inspecting submission JSON) -->
     <div id="detailsModal" class="modal-overlay">
         <div class="modal-content" style="width: 500px;">
             <div class="modal-caption">

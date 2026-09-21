@@ -95,6 +95,14 @@ if static_dir.exists():
     async def serve_dashboard():
         return FileResponse(static_dir / "index.html")
 
+    @app.get("/login", include_in_schema=False)
+    async def serve_login():
+        return FileResponse(static_dir / "login.html")
+
+    @app.get("/register", include_in_schema=False)
+    async def serve_register():
+        return FileResponse(static_dir / "register.html")
+
 
 
 

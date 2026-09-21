@@ -13,6 +13,7 @@ authors = [
 ]
 dependencies = [
     "alembic>=1.20.0",
+    "asgi-correlation-id>=5.0.1",
     "asyncpg>=0.31.0",
     "email-validator>=2.3.0",
     "fastapi>=0.141.1",

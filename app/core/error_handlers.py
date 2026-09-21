@@ -28,8 +28,14 @@ STATUS_TO_ERROR_CODE: dict[int, str] = {
 }
 
 
+from asgi_correlation_id import correlation_id
+
+
 def _extract_request_id(request: Request) -> Optional[str]:
-    """Extract correlation or request ID from headers or request state."""
+    """Extract correlation or request ID from contextvar, headers, or request state."""
+    cid = correlation_id.get()
+    if cid:
+        return cid
     req_id = request.headers.get("X-Request-ID")
     if req_id:
         return req_id

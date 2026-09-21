@@ -5,6 +5,8 @@ import joblib
 from fastapi import FastAPI
 from sqlalchemy import select
 
+from asgi_correlation_id import CorrelationIdMiddleware
+
 from app.core.config import ROOT_DIR, settings
 from app.core.error_handlers import register_exception_handlers
 from app.db.session import async_session_maker
@@ -68,6 +70,16 @@ app = FastAPI(
     lifespan=lifespan,
     docs_url="/docs",
     redoc_url="/redoc",
+)
+
+# Mount Correlation ID Middleware (propagating standard UUIDv4)
+import uuid
+
+app.add_middleware(
+    CorrelationIdMiddleware,
+    header_name="X-Request-ID",
+    update_request_header=True,
+    generator=lambda: str(uuid.uuid4()),
 )
 
 # Register Global Exception Handlers

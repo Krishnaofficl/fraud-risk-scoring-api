@@ -8,10 +8,11 @@ Tracking implementation progress for the **Fraud/Risk Scoring API** project acro
 
 - [x] **Phase 0 — Environment & ML Reproduction** `[9/9]`
 - [x] **Phase 1 — Project Skeleton & Configuration** `[7/7]`
-- [ ] **Phase 2 — Database Layer & Async Migrations** `[7/10]`
-- [ ] **Phase 3 — Modern Authentication** `[0/7]`
-- [ ] **Phase 4 — Core Scoring Endpoints** `[0/9]`
-- [ ] **Phase 5 — Error Handling & Resilience** `[0/5]`
+- [x] **Phase 2 — Database Layer & Async Migrations** `[10/10]`
+- [x] **Phase 3 — Modern Authentication** `[7/7]`
+- [x] **Phase 4 — Core Scoring Endpoints** `[9/9]`
+- [x] **Phase 5 — Error Handling & Resilience** `[5/5]`
+- [x] **Web Portal — Codeforces-Themed Interface** (Interactive Scoring, History, Health)
 - [ ] **Phase 6 — Structured Logging & Correlation IDs** `[0/4]`
 - [ ] **Phase 7 — Testing Suite** `[0/9]`
 - [ ] **Phase 8 — Containerization** `[0/5]`

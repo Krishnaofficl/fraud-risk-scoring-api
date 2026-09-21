@@ -1,0 +1,523 @@
+/* Codeforces Authentic Styling Sheet */
+
+/* Reset & Base Typography */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: verdana, arial, sans-serif;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #333333;
+    background-color: #f0f2f5;
+    min-height: 100vh;
+}
+
+a {
+    color: #3B5998;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Page Frame / Container */
+.page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 10px 30px 10px;
+}
+
+/* Top Header Bar */
+.top-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0 8px 0;
+    background: transparent;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Codeforces 3-Bar Logo */
+.cf-logo-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 28px;
+    padding-bottom: 2px;
+}
+
+.cf-bar {
+    width: 6px;
+    border-radius: 2px 2px 0 0;
+}
+
+.cf-bar-blue {
+    height: 16px;
+    background-color: #318CE7;
+}
+
+.cf-bar-yellow {
+    height: 26px;
+    background-color: #F2B826;
+}
+
+.cf-bar-red {
+    height: 20px;
+    background-color: #CC0000;
+}
+
+.site-title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #3B5998;
+    letter-spacing: -0.5px;
+    text-shadow: 1px 1px 0 #fff;
+}
+
+.site-subtitle {
+    font-size: 11px;
+    color: #777;
+    margin-left: 4px;
+    font-weight: normal;
+}
+
+/* User Account Links */
+.user-account-bar {
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-handle {
+    font-weight: bold;
+}
+
+/* Codeforces Rank Colors */
+.rank-grandmaster { color: #CC0000 !important; }
+.rank-master { color: #FF8C00 !important; }
+.rank-candidate-master { color: #AA00AA !important; }
+.rank-expert { color: #0000FF !important; }
+.rank-specialist { color: #03A89E !important; }
+.rank-pupil { color: #008000 !important; }
+.rank-newbie { color: #808080 !important; }
+
+/* Main Navigation Menu Bar */
+.main-menu {
+    display: flex;
+    align-items: center;
+    background-color: #ffffff;
+    border: 1px solid #b9b9b9;
+    border-radius: 5px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+.menu-item {
+    display: block;
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #3B5998;
+    border-right: 1px solid #e1e1e1;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.menu-item:hover {
+    background-color: #f0f4f8;
+    text-decoration: none;
+}
+
+.menu-item.active {
+    background-color: #3B5998;
+    color: #ffffff;
+}
+
+/* Layout Grid */
+.content-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 16px;
+}
+
+@media (max-width: 900px) {
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Codeforces Classic Roundbox */
+.roundbox {
+    background: #ffffff;
+    border: 1px solid #b9b9b9;
+    border-radius: 5px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+}
+
+.roundbox-caption {
+    background: linear-gradient(to bottom, #f0f4f8 0%, #e1e7ee 100%);
+    border-bottom: 1px solid #b9b9b9;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #3B5998;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.roundbox-body {
+    padding: 12px 14px;
+}
+
+/* Buttons */
+.cf-button {
+    background: linear-gradient(to bottom, #4a77ad 0%, #355d8f 100%);
+    color: #ffffff;
+    border: 1px solid #23426b;
+    border-radius: 4px;
+    padding: 5px 14px;
+    font-size: 12px;
+    font-weight: bold;
+    font-family: verdana, arial, sans-serif;
+    cursor: pointer;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.cf-button:hover {
+    background: linear-gradient(to bottom, #5283be 0%, #3b669d 100%);
+}
+
+.cf-button:active {
+    background: #2e5280;
+}
+
+.cf-button-secondary {
+    background: #f7f9fa;
+    color: #3B5998;
+    border: 1px solid #b9b9b9;
+    border-radius: 4px;
+    padding: 4px 10px;
+    font-size: 11px;
+    cursor: pointer;
+    font-weight: normal;
+}
+
+.cf-button-secondary:hover {
+    background: #e9eef3;
+    border-color: #3B5998;
+}
+
+.cf-button-danger {
+    background: #fff0f0;
+    color: #CC0000;
+    border: 1px solid #e0b4b4;
+    border-radius: 3px;
+    padding: 2px 6px;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.cf-button-danger:hover {
+    background: #CC0000;
+    color: #fff;
+}
+
+/* Presets Bar */
+.presets-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px dotted #ccc;
+    align-items: center;
+}
+
+.presets-label {
+    font-size: 11px;
+    font-weight: bold;
+    color: #555;
+}
+
+/* Input Fields */
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.form-group label {
+    font-size: 11px;
+    color: #444;
+    font-weight: bold;
+}
+
+.cf-input, .cf-select {
+    border: 1px solid #b9b9b9;
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-size: 12px;
+    font-family: verdana, arial, sans-serif;
+    color: #333;
+    background: #fff;
+}
+
+.cf-input:focus, .cf-select:focus {
+    outline: none;
+    border-color: #3B5998;
+    box-shadow: 0 0 3px rgba(59, 89, 152, 0.4);
+}
+
+.json-textarea {
+    width: 100%;
+    height: 180px;
+    font-family: Consolas, "Lucida Console", "Courier New", monospace;
+    font-size: 11px;
+    border: 1px solid #b9b9b9;
+    border-radius: 3px;
+    padding: 8px;
+    background-color: #fafbfc;
+    color: #24292e;
+    resize: vertical;
+}
+
+/* Result Judge Box (Codeforces Verdict Banner) */
+.verdict-banner {
+    display: none;
+    margin-bottom: 16px;
+    border: 1px solid #b9b9b9;
+    border-radius: 5px;
+    padding: 12px 16px;
+    background-color: #ffffff;
+}
+
+.verdict-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.verdict-badge {
+    font-size: 15px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Verdict Types */
+.verdict-approve {
+    color: #008000; /* Codeforces Accepted Green */
+}
+
+.verdict-deny {
+    color: #CC0000; /* Codeforces Wrong Answer Red */
+}
+
+.verdict-review {
+    color: #1756A5; /* Codeforces Pending / Amber Blue */
+}
+
+.verdict-stats {
+    font-family: Consolas, monospace;
+    font-size: 12px;
+    color: #555;
+}
+
+.prob-meter-bg {
+    width: 100%;
+    height: 8px;
+    background: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 6px;
+    border: 1px solid #ccc;
+}
+
+.prob-meter-fill {
+    height: 100%;
+    width: 0%;
+    transition: width 0.4s ease;
+}
+
+/* Codeforces Status Table */
+.cf-table-container {
+    overflow-x: auto;
+}
+
+.cf-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    border: 1px solid #b9b9b9;
+    background: #ffffff;
+}
+
+.cf-table th {
+    background-color: #e1e7ee;
+    color: #3B5998;
+    font-weight: bold;
+    text-align: left;
+    padding: 6px 10px;
+    border: 1px solid #b9b9b9;
+}
+
+.cf-table td {
+    padding: 6px 10px;
+    border: 1px solid #e1e1e1;
+    vertical-align: middle;
+}
+
+.cf-table tr:nth-child(even) {
+    background-color: #f7f9fa;
+}
+
+.cf-table tr:hover {
+    background-color: #e8f0f8;
+}
+
+.mono {
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 11px;
+}
+
+/* Pagination Bar */
+.pagination-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    font-size: 11px;
+    color: #666;
+}
+
+/* Sidebar Widgets */
+.sidebar-list {
+    list-style: none;
+}
+
+.sidebar-list li {
+    padding: 5px 0;
+    border-bottom: 1px dotted #e1e1e1;
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+}
+
+.sidebar-list li:last-child {
+    border-bottom: none;
+}
+
+.rule-pill {
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.pill-green { background: #e6f4ea; color: #137333; border: 1px solid #ceead6; }
+.pill-yellow { background: #fef7e0; color: #b06000; border: 1px solid #feefc3; }
+.pill-red { background: #fce8e6; color: #c5221f; border: 1px solid #fad2cf; }
+
+/* Modal */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: #ffffff;
+    border: 1px solid #b9b9b9;
+    border-radius: 6px;
+    width: 360px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+}
+
+.modal-caption {
+    background: linear-gradient(to bottom, #f0f4f8 0%, #e1e7ee 100%);
+    border-bottom: 1px solid #b9b9b9;
+    padding: 8px 14px;
+    font-weight: bold;
+    color: #3B5998;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-close {
+    cursor: pointer;
+    font-weight: bold;
+    color: #666;
+}
+
+.modal-close:hover {
+    color: #000;
+}
+
+.modal-body {
+    padding: 16px;
+}
+
+.alert-message {
+    padding: 8px 10px;
+    border-radius: 3px;
+    font-size: 11px;
+    margin-bottom: 10px;
+    display: none;
+}
+
+.alert-error {
+    background-color: #fce8e6;
+    color: #c5221f;
+    border: 1px solid #fad2cf;
+}
+
+.alert-success {
+    background-color: #e6f4ea;
+    color: #137333;
+    border: 1px solid #ceead6;
+}
+
+/* Footer */
+.site-footer {
+    text-align: center;
+    font-size: 11px;
+    color: #777;
+    margin-top: 24px;
+    padding-top: 12px;
+    border-top: 1px solid #e1e1e1;
+}

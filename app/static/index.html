@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FraudForces - Vehicle Loan Risk Benchmark</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="page-container">
+
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="logo-area">
+                <div class="cf-logo-bars">
+                    <div class="cf-bar cf-bar-blue"></div>
+                    <div class="cf-bar cf-bar-yellow"></div>
+                    <div class="cf-bar cf-bar-red"></div>
+                </div>
+                <div>
+                    <span class="site-title">FraudForces</span>
+                    <span class="site-subtitle">| Risk Scoring Portal</span>
+                </div>
+            </div>
+
+            <!-- User Auth Status -->
+            <div class="user-account-bar" id="userAccountBar">
+                <span id="authGuestView">
+                    <a href="javascript:void(0)" onclick="openModal('loginModal')">Enter</a>
+                    &nbsp;|&nbsp;
+                    <a href="javascript:void(0)" onclick="openModal('registerModal')">Register</a>
+                </span>
+                <span id="authUserView" style="display: none;">
+                    <span id="userRankTitle" class="user-handle rank-specialist"></span>
+                    (<a href="javascript:void(0)" id="userEmailLink"></a>)
+                    &nbsp;|&nbsp;
+                    <a href="javascript:void(0)" onclick="handleLogout()">Logout</a>
+                </span>
+            </div>
+        </header>
+
+        <!-- Main Navigation Bar -->
+        <nav class="main-menu">
+            <a class="menu-item active" id="tabSubmit" onclick="switchView('submit')">Submit Application</a>
+            <a class="menu-item" id="tabHistory" onclick="switchView('history')">Status / Submissions</a>
+            <a class="menu-item" id="tabModel" onclick="switchView('model')">Model Benchmark</a>
+            <a class="menu-item" href="/docs" target="_blank">API Docs</a>
+        </nav>
+
+        <!-- Content Grid Layout -->
+        <div class="content-grid">
+
+            <!-- Left Primary Column -->
+            <main class="primary-column">
+
+                <!-- Live Verdict Banner (Judge Result) -->
+                <div id="verdictBanner" class="verdict-banner">
+                    <div class="verdict-header">
+                        <div>
+                            <span>Verdict: </span>
+                            <span id="verdictBadge" class="verdict-badge">ACCEPTED</span>
+                        </div>
+                        <div class="verdict-stats">
+                            <span id="verdictTime">Latency: 24 ms</span> | 
+                            <span id="verdictScore">Score: 0.1245</span>
+                        </div>
+                    </div>
+                    <div style="font-size: 11px; color: #555; margin-bottom: 4px;">
+                        Fraud Risk Probability: <strong id="verdictProbText">12.45%</strong>
+                    </div>
+                    <div class="prob-meter-bg">
+                        <div id="probMeterFill" class="prob-meter-fill"></div>
+                    </div>
+                    <div style="margin-top: 8px; font-size: 11px; color: #666;">
+                        Audit Record ID: <span id="verdictAuditId" class="mono"></span>
+                    </div>
+                </div>
+
+                <!-- Submit View -->
+                <section id="viewSubmit">
+                    <div class="roundbox">
+                        <div class="roundbox-caption">
+                            <span>// Submit Loan Application for Risk Scoring</span>
+                            <span style="font-size: 11px; font-weight: normal; color: #555;">Model: v1-baseline</span>
+                        </div>
+                        <div class="roundbox-body">
+
+                            <!-- Presets -->
+                            <div class="presets-container">
+                                <span class="presets-label">Applicant Presets:</span>
+                                <button type="button" class="cf-button-secondary" onclick="applyPreset('low_risk')">Low Risk (Expected APPROVE)</button>
+                                <button type="button" class="cf-button-secondary" onclick="applyPreset('borderline')">Borderline (Expected REVIEW)</button>
+                                <button type="button" class="cf-button-secondary" onclick="applyPreset('high_risk')">High Risk (Expected DENY)</button>
+                                <button type="button" class="cf-button-secondary" onclick="toggleJsonEditor()" style="margin-left: auto;">Toggle Raw JSON</button>
+                            </div>
+
+                            <!-- Alert Box -->
+                            <div id="submitAlert" class="alert-message alert-error"></div>
+
+                            <!-- Form View -->
+                            <form id="scoringForm" onsubmit="handleScoreSubmit(event)">
+                                <div id="structuredInputs">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label>Disbursed Amount (₹):</label>
+                                            <input type="number" id="disbursed_amount" class="cf-input" value="50000" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Asset Cost (₹):</label>
+                                            <input type="number" id="asset_cost" class="cf-input" value="65000" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>LTV (%):</label>
+                                            <input type="number" step="0.01" id="ltv" class="cf-input" value="76.92" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label>Employment Type:</label>
+                                            <select id="employment_type" class="cf-select">
+                                                <option value="Salaried">Salaried</option>
+                                                <option value="Self employed">Self employed</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Date of Birth:</label>
+                                            <input type="text" id="date_of_birth" class="cf-input" value="15-06-1988" placeholder="DD-MM-YYYY">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Disbursal Date:</label>
+                                            <input type="text" id="disbursal_date" class="cf-input" value="10-10-2018" placeholder="DD-MM-YYYY">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label>Bureau Score (PERFORM_CNS.SCORE):</label>
+                                            <input type="number" id="bureau_score" class="cf-input" value="750" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Bureau Score Description:</label>
+                                            <input type="text" id="bureau_score_description" class="cf-input" value="C-Very Low Risk">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>No. of Inquiries (Last 6 Mos):</label>
+                                            <input type="number" id="no_of_inquiries" class="cf-input" value="0" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label>Primary Active Accounts:</label>
+                                            <input type="number" id="pri_active_accts" class="cf-input" value="2">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Primary Overdue Accounts:</label>
+                                            <input type="number" id="pri_overdue_accts" class="cf-input" value="0">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Primary Current Balance (₹):</label>
+                                            <input type="number" id="pri_current_balance" class="cf-input" value="12000">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label>Credit History Length:</label>
+                                            <input type="text" id="credit_history_length" class="cf-input" value="2yrs 6mon" placeholder="Xyrs Ymon">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Average Loan Tenure:</label>
+                                            <input type="text" id="average_acct_age" class="cf-input" value="1yrs 2mon" placeholder="Xyrs Ymon">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>State / Branch ID:</label>
+                                            <input type="number" id="state_id" class="cf-input" value="6">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Raw JSON Area (Hidden by default) -->
+                                <div id="jsonEditorContainer" style="display: none; margin-bottom: 12px;">
+                                    <label style="font-size: 11px; font-weight: bold; margin-bottom: 4px; display: block;">Raw 38-Feature JSON Payload:</label>
+                                    <textarea id="rawJsonInput" class="json-textarea"></textarea>
+                                </div>
+
+                                <div style="margin-top: 14px; display: flex; align-items: center; gap: 12px;">
+                                    <button type="submit" id="btnSubmitScore" class="cf-button">
+                                        <span>Submit for Risk Scoring</span>
+                                    </button>
+                                    <span id="scoringStatus" style="font-size: 11px; color: #666;"></span>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Submissions / Status Table View -->
+                <section id="viewHistory" style="display: none;">
+                    <div class="roundbox">
+                        <div class="roundbox-caption">
+                            <span>// Submission Status & Audit History</span>
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <select id="filterDecision" class="cf-select" style="padding: 2px 6px; font-size: 11px;" onchange="loadSubmissions(1)">
+                                    <option value="">All Decisions</option>
+                                    <option value="APPROVE">APPROVE</option>
+                                    <option value="REVIEW">REVIEW</option>
+                                    <option value="DENY">DENY</option>
+                                </select>
+                                <button type="button" class="cf-button-secondary" onclick="loadSubmissions(1)">Refresh</button>
+                            </div>
+                        </div>
+                        <div class="roundbox-body" style="padding: 0;">
+                            <div class="cf-table-container">
+                                <table class="cf-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 70px;"># ID</th>
+                                            <th>Timestamp (UTC)</th>
+                                            <th>Applicant ID</th>
+                                            <th>Verdict</th>
+                                            <th>Probability</th>
+                                            <th>Latency</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="submissionsTableBody">
+                                        <tr>
+                                            <td colspan="7" style="text-align: center; color: #777; padding: 20px;">
+                                                Please authenticate to view user submissions.
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="pagination-bar" style="padding: 8px 12px;">
+                                <span id="paginationInfo">Showing 0 submissions</span>
+                                <div style="display: flex; gap: 6px;">
+                                    <button type="button" id="btnPrevPage" class="cf-button-secondary" onclick="changePage(-1)" disabled>&lt; Previous</button>
+                                    <button type="button" id="btnNextPage" class="cf-button-secondary" onclick="changePage(1)" disabled>Next &gt;</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Model Info View -->
+                <section id="viewModel" style="display: none;">
+                    <div class="roundbox">
+                        <div class="roundbox-caption">
+                            <span>// Machine Learning Benchmark Specification</span>
+                        </div>
+                        <div class="roundbox-body">
+                            <ul class="sidebar-list" style="font-size: 13px;">
+                                <li><strong>Dataset:</strong> Amazon Fraud Dataset Benchmark (FDB) - vehicleloan</li>
+                                <li><strong>Training Observations:</strong> 186,523 rows (80/20 train/holdout split)</li>
+                                <li><strong>Feature Pipeline:</strong> ColumnTransformer + OneHotEncoder + XGBClassifier</li>
+                                <li><strong>Features Count:</strong> 38 engineered input features</li>
+                                <li><strong>Paper Baseline AUC:</strong> 0.5180 (Amazon FDB Paper)</li>
+                                <li><strong>Our Achieved Holdout AUC:</strong> <span style="color: #008000; font-weight: bold;">0.6665 (+28.7% above baseline)</span></li>
+                                <li><strong>Inference Runtime:</strong> Pure Scikit/XGBoost CPU (~1.5 ms)</li>
+                                <li><strong>Serialization:</strong> joblib (scikit-learn 1.6 / xgboost 3.1)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+
+            <!-- Right Sidebar Column -->
+            <aside class="sidebar-column">
+
+                <!-- User Profile Roundbox -->
+                <div class="roundbox">
+                    <div class="roundbox-caption">
+                        <span>// Session Profile</span>
+                    </div>
+                    <div class="roundbox-body" id="sidebarProfileBody">
+                        <p style="color: #666; font-size: 11px;">Not currently authenticated.</p>
+                        <div style="margin-top: 8px;">
+                            <button class="cf-button" onclick="openModal('loginModal')">Sign In</button>
+                            <button class="cf-button-secondary" onclick="openModal('registerModal')" style="margin-left: 6px;">Register</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Decision Rules Roundbox -->
+                <div class="roundbox">
+                    <div class="roundbox-caption">
+                        <span>// Risk Decision Rules</span>
+                    </div>
+                    <div class="roundbox-body">
+                        <ul class="sidebar-list">
+                            <li>
+                                <span>P(fraud) &lt; 0.20</span>
+                                <span class="rule-pill pill-green">APPROVE (Accepted)</span>
+                            </li>
+                            <li>
+                                <span>0.20 &le; P(fraud) &le; 0.40</span>
+                                <span class="rule-pill pill-yellow">REVIEW (Pending)</span>
+                            </li>
+                            <li>
+                                <span>P(fraud) &gt; 0.40</span>
+                                <span class="rule-pill pill-red">DENY (Rejected)</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- System Health Roundbox -->
+                <div class="roundbox">
+                    <div class="roundbox-caption">
+                        <span>// System Health</span>
+                        <button type="button" class="cf-button-secondary" onclick="checkHealth()" style="padding: 1px 6px;">Ping</button>
+                    </div>
+                    <div class="roundbox-body">
+                        <ul class="sidebar-list" id="healthDetailsList">
+                            <li><span>Service:</span> <span id="healthService">Online</span></li>
+                            <li><span>Database:</span> <span id="healthDatabase">Checking...</span></li>
+                            <li><span>ML Model:</span> <span id="healthModel">Checking...</span></li>
+                            <li><span>Latency:</span> <span id="healthLatency">--</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Fast Preset Actions -->
+                <div class="roundbox">
+                    <div class="roundbox-caption">
+                        <span>// Quick Actions</span>
+                    </div>
+                    <div class="roundbox-body">
+                        <div style="display: flex; flex-direction: column; gap: 6px;">
+                            <button class="cf-button-secondary" onclick="applyPreset('low_risk'); switchView('submit');">Load Low Risk Sample</button>
+                            <button class="cf-button-secondary" onclick="applyPreset('high_risk'); switchView('submit');">Load Fraud Risk Sample</button>
+                            <a href="/docs" target="_blank" class="cf-button-secondary" style="text-align: center;">Open Swagger Docs</a>
+                        </div>
+                    </div>
+                </div>
+
+            </aside>
+        </div>
+
+        <!-- Footer -->
+        <footer class="site-footer">
+            <p>FraudForces &bull; Amazon FDB Vehicle Loan Risk Scoring System &bull; FastAPI + PostgreSQL + Scikit-Learn + XGBoost</p>
+        </footer>
+
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-caption">
+                <span>Enter / Sign In</span>
+                <span class="modal-close" onclick="closeModal('loginModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="loginAlert" class="alert-message alert-error"></div>
+                <form onsubmit="handleLoginSubmit(event)">
+                    <div class="form-group" style="margin-bottom: 10px;">
+                        <label>Email Address:</label>
+                        <input type="email" id="loginEmail" class="cf-input" required placeholder="analyst@example.com">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 14px;">
+                        <label>Password:</label>
+                        <input type="password" id="loginPassword" class="cf-input" required placeholder="••••••••">
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <button type="submit" class="cf-button">Sign In</button>
+                        <span style="font-size: 11px;">Don't have an account? <a href="javascript:void(0)" onclick="closeModal('loginModal'); openModal('registerModal')">Register</a></span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-caption">
+                <span>Register New Account</span>
+                <span class="modal-close" onclick="closeModal('registerModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="registerAlert" class="alert-message alert-error"></div>
+                <form onsubmit="handleRegisterSubmit(event)">
+                    <div class="form-group" style="margin-bottom: 10px;">
+                        <label>Email Address:</label>
+                        <input type="email" id="registerEmail" class="cf-input" required placeholder="new_analyst@example.com">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 14px;">
+                        <label>Password (min 8 chars):</label>
+                        <input type="password" id="registerPassword" class="cf-input" required placeholder="SuperSecretPassword123!">
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <button type="submit" class="cf-button">Register</button>
+                        <span style="font-size: 11px;">Already registered? <a href="javascript:void(0)" onclick="closeModal('registerModal'); openModal('loginModal')">Sign In</a></span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Details Modal -->
+    <div id="detailsModal" class="modal-overlay">
+        <div class="modal-content" style="width: 500px;">
+            <div class="modal-caption">
+                <span>Submission Details</span>
+                <span class="modal-close" onclick="closeModal('detailsModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <pre id="detailsJsonContent" class="mono" style="max-height: 350px; overflow-y: auto; background: #f8f9fa; padding: 10px; border: 1px solid #ccc; font-size: 11px;"></pre>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

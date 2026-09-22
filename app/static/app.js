@@ -407,6 +407,8 @@ async function handleScoreSubmit(event) {
         if (res.ok) {
             displayVerdict(data, elapsedMs);
             statusMsg.textContent = `Completed in ${elapsedMs} ms`;
+            alertBox.style.display = "none";
+            loadSubmissions(1);
         } else {
             alertBox.textContent = `Scoring Error: ${data.message || data.detail || "Inference failed"}`;
             alertBox.style.display = "block";
@@ -431,12 +433,13 @@ function displayVerdict(data, elapsedMs) {
     const meter = document.getElementById("probMeterFill");
     const auditId = document.getElementById("verdictAuditId");
 
-    const prob = data.fraud_probability;
+    const prob = (typeof data.probability === "number") ? data.probability : 
+                 (typeof data.fraud_probability === "number") ? data.fraud_probability : 0;
     const pct = (prob * 100).toFixed(2);
     probText.textContent = `${pct}%`;
     scoreSpan.textContent = `Score: ${prob.toFixed(4)}`;
     timeSpan.textContent = `Latency: ${elapsedMs} ms`;
-    auditId.textContent = data.id || "N/A";
+    auditId.textContent = data.request_id || data.id || "N/A";
 
     meter.style.width = `${Math.min(pct, 100)}%`;
 
@@ -506,12 +509,15 @@ async function loadSubmissions(page = 1) {
         }
 
         tbody.innerHTML = data.items.map(item => {
-            const shortId = item.id.substring(0, 8);
-            const ts = new Date(item.created_at).toISOString().replace("T", " ").substring(0, 19);
-            const prob = (item.fraud_probability * 100).toFixed(2) + "%";
+            const reqId = item.request_id || item.id || "";
+            const shortId = reqId ? reqId.substring(0, 8) : "N/A";
+            const ts = item.created_at ? new Date(item.created_at).toISOString().replace("T", " ").substring(0, 19) : "--";
+            const itemProb = (typeof item.probability === "number") ? item.probability : 
+                             (typeof item.fraud_probability === "number") ? item.fraud_probability : 0;
+            const probStr = (itemProb * 100).toFixed(2) + "%";
 
             let pillClass = "pill-yellow";
-            let verdictLabel = item.decision;
+            let verdictLabel = item.decision || "REVIEW";
             if (item.decision === "APPROVE") {
                 pillClass = "pill-green";
             } else if (item.decision === "DENY") {
@@ -520,15 +526,15 @@ async function loadSubmissions(page = 1) {
 
             return `
                 <tr>
-                    <td class="mono"><a href="javascript:void(0)" onclick="showSubmissionDetails('${item.id}')">${shortId}</a></td>
+                    <td class="mono"><a href="javascript:void(0)" onclick="showSubmissionDetails('${reqId}')">${shortId}</a></td>
                     <td class="mono" style="font-size: 11px;">${ts}</td>
                     <td class="mono">${item.applicant_id || 'APPL-' + shortId}</td>
                     <td><span class="rule-pill ${pillClass}">${verdictLabel}</span></td>
-                    <td class="mono">${prob}</td>
-                    <td class="mono" style="font-size: 11px;">${item.latency_ms ? item.latency_ms.toFixed(1) + ' ms' : '--'}</td>
+                    <td class="mono">${probStr}</td>
+                    <td class="mono" style="font-size: 11px;">${item.model_version || 'v1-baseline'}</td>
                     <td>
-                        <button class="cf-button-secondary" onclick="showSubmissionDetails('${item.id}')">View</button>
-                        <button class="cf-button-danger" onclick="deleteSubmission('${item.id}')">Delete</button>
+                        <button class="cf-button-secondary" onclick="showSubmissionDetails('${reqId}')">View</button>
+                        <button class="cf-button-danger" onclick="deleteSubmission('${reqId}')">Delete</button>
                     </td>
                 </tr>
             `;

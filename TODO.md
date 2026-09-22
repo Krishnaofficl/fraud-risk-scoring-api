@@ -14,7 +14,7 @@ Tracking implementation progress for the **Fraud/Risk Scoring API** project acro
 - [x] **Phase 5 — Error Handling & Resilience** `[5/5]`
 - [x] **Web Portal — Codeforces-Themed Interface** (Interactive Scoring, History, Health)
 - [x] **Phase 6 — Structured Logging & Correlation IDs** `[4/4]`
-- [ ] **Phase 7 — Testing Suite** `[3/9]`
+- [ ] **Phase 7 — Testing Suite** `[4/9]`
 - [ ] **Phase 8 — Containerization** `[0/5]`
 - [ ] **Phase 9 — Cloud Deployment** `[0/5]`
 - [ ] **Phase 10 — Documentation & Polish** `[0/5]`
@@ -146,7 +146,7 @@ Tracking implementation progress for the **Fraud/Risk Scoring API** project acro
 - [x] **7.1 Pytest Configuration:** Configure `pyproject.toml` / `pytest.ini` with `asyncio_mode = "auto"`.
 - [x] **7.2 Unit Test — Security:** `tests/unit/test_security.py` (password hashing, bcrypt verify, JWT encode/decode, expired token rejection).
 - [x] **7.3 Unit Test — Schemas:** `tests/unit/test_schemas.py` (38-feature validation, missing fields, type coercion, boundary checks).
-- [ ] **7.4 Unit Test — Scoring Logic:** `tests/unit/test_scoring.py` (decision threshold logic and probability bins with a mocked ML pipeline).
+- [x] **7.4 Unit Test — Scoring Logic:** `tests/unit/test_scoring.py` (decision threshold logic and probability bins with a mocked ML pipeline).
 - [ ] **7.5 Test Fixtures:** Set up `tests/conftest.py` with `httpx.AsyncClient`, event loop management, and test DB session overrides.
 - [ ] **7.6 Integration Test — Auth Routes:** `tests/integration/test_auth.py` (register, duplicate email rejection, login, `/v1/users/me`).
 - [ ] **7.7 Integration Test — Scoring Flow:** `tests/integration/test_scoring_flow.py` (score submission, DB persistence, pagination, filtering, soft-delete).

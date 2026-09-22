@@ -22,6 +22,7 @@ from app.schemas.scoring import (
     RiskDecision,
     ScoringDetailResponse,
     ScoringResultResponse,
+    classify_risk,
 )
 
 router = APIRouter(prefix="/v1", tags=["Scoring"])
@@ -76,12 +77,7 @@ async def score_applicant(
         )
 
     # 3. Apply Decision Thresholds
-    if prob_default < 0.20:
-        decision = RiskDecision.APPROVE.value
-    elif prob_default <= 0.40:
-        decision = RiskDecision.REVIEW.value
-    else:
-        decision = RiskDecision.DENY.value
+    decision = classify_risk(prob_default).value
 
     # 4. Persist to PostgreSQL
     scoring_record = ScoringRequest(

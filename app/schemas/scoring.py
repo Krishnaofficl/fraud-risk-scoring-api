@@ -206,6 +206,21 @@ class RiskDecision(str, Enum):
     DENY = "DENY"        # Probability > 0.40
 
 
+def classify_risk(probability: float) -> RiskDecision:
+    """
+    Classifies a predicted default probability into a standardized RiskDecision:
+    - < 0.20: APPROVE
+    - 0.20 to 0.40: REVIEW
+    - > 0.40: DENY
+    """
+    if probability < 0.20:
+        return RiskDecision.APPROVE
+    elif probability <= 0.40:
+        return RiskDecision.REVIEW
+    else:
+        return RiskDecision.DENY
+
+
 class ScoringResultResponse(BaseModel):
     """
     Standard API response schema for a fraud risk scoring prediction.

@@ -77,7 +77,7 @@ class LoanApplicantInput(BaseModel):
         le=150.0,
         description="Loan to Value ratio percentage",
         examples=[76.9],
-        alias="Ltv",
+        validation_alias=AliasChoices("ltv", "Ltv", "LTV"),
     )
 
     # Branch, Sourcing & Dealer Identifiers

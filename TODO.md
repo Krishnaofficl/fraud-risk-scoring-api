@@ -14,7 +14,7 @@ Tracking implementation progress for the **Fraud/Risk Scoring API** project acro
 - [x] **Phase 5 — Error Handling & Resilience** `[5/5]`
 - [x] **Web Portal — Codeforces-Themed Interface** (Interactive Scoring, History, Health)
 - [x] **Phase 6 — Structured Logging & Correlation IDs** `[4/4]`
-- [ ] **Phase 7 — Testing Suite** `[0/9]`
+- [ ] **Phase 7 — Testing Suite** `[1/9]`
 - [ ] **Phase 8 — Containerization** `[0/5]`
 - [ ] **Phase 9 — Cloud Deployment** `[0/5]`
 - [ ] **Phase 10 — Documentation & Polish** `[0/5]`
@@ -143,7 +143,7 @@ Tracking implementation progress for the **Fraud/Risk Scoring API** project acro
 ## Phase 7 — Testing Suite
 > **Goal:** Comprehensive unit and integration test coverage separating fast mocked tests from containerized database tests.
 
-- [ ] **7.1 Pytest Configuration:** Configure `pyproject.toml` / `pytest.ini` with `asyncio_mode = "auto"`.
+- [x] **7.1 Pytest Configuration:** Configure `pyproject.toml` / `pytest.ini` with `asyncio_mode = "auto"`.
 - [ ] **7.2 Unit Test — Security:** `tests/unit/test_security.py` (password hashing, bcrypt verify, JWT encode/decode, expired token rejection).
 - [ ] **7.3 Unit Test — Schemas:** `tests/unit/test_schemas.py` (38-feature validation, missing fields, type coercion, boundary checks).
 - [ ] **7.4 Unit Test — Scoring Logic:** `tests/unit/test_scoring.py` (decision threshold logic and probability bins with a mocked ML pipeline).

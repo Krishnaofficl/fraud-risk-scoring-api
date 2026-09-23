@@ -160,7 +160,7 @@ Tracking implementation progress for the **Fraud/Risk Scoring API** project acro
 ## Phase 8 — Containerization
 > **Goal:** Reproducible, multi-stage Docker environment running the API and PostgreSQL with health checks.
 
-- [ ] **8.1 Multi-Stage Dockerfile:** Write `Dockerfile` with `python:3.12-slim` builder stage (compiling wheels) and a slim runtime stage.
+- [x] **8.1 Multi-Stage Dockerfile:** Write `Dockerfile` with `python:3.12-slim` builder stage (compiling wheels) and a slim runtime stage.
 - [ ] **8.2 Docker Compose Stack:** Write `docker-compose.yml` defining `api` and `postgres` services with named volumes and environment variables.
 - [ ] **8.3 Healthchecks in Compose:** Add healthcheck conditions (`pg_isready` on postgres, curl `/health` on api) to ensure correct startup order.
 - [ ] **8.4 Test Compose Profile:** Create `docker-compose.test.yml` for running integration test suites inside isolated containers.

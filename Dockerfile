@@ -64,3 +64,25 @@ EXPOSE 8000
 
 # Start Uvicorn ASGI server
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+# ==============================================================================
+# Stage 3: Test Target Stage
+# Isolated test execution stage with pytest and testing utilities
+# ==============================================================================
+FROM runtime AS test
+
+USER root
+
+# Install test dependencies
+RUN /opt/venv/bin/pip install --no-cache-dir pytest>=8.2.0 pytest-asyncio>=0.23.0
+
+# Copy test suite and configuration
+COPY pyproject.toml .
+COPY tests ./tests
+
+# Set non-root permissions
+RUN chown -R appuser:appgroup /app
+
+USER appuser
+
+CMD ["pytest", "-v"]

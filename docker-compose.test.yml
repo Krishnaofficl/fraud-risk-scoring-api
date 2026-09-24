@@ -1,0 +1,50 @@
+services:
+  postgres_test:
+    image: postgres:16-alpine
+    container_name: fraud_postgres_test
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-fraud_test_db}
+    ports:
+      - "${POSTGRES_TEST_PORT:-5435}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d fraud_test_db"]
+      interval: 3s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    tmpfs:
+      - /var/lib/postgresql/data
+    networks:
+      - test_network
+
+  test_runner:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: test
+    container_name: fraud_test_runner
+    environment:
+      - ENVIRONMENT=testing
+      - DEBUG=false
+      - PROJECT_NAME=Fraud & Risk Scoring API (Test)
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres_test:5432/${POSTGRES_DB:-fraud_test_db}
+      - JWT_SECRET=test-secret-key-for-container-environment-32chars
+      - JWT_ALGORITHM=HS256
+      - ACCESS_TOKEN_EXPIRE_MINUTES=60
+      - MODEL_PATH=artifacts/model_pipeline.joblib
+      - MODEL_VERSION=v1-baseline
+      - LOG_LEVEL=INFO
+      - LOG_JSON_FORMAT=false
+    command: >
+      sh -c "alembic upgrade head && pytest -v"
+    depends_on:
+      postgres_test:
+        condition: service_healthy
+    networks:
+      - test_network
+
+networks:
+  test_network:
+    driver: bridge

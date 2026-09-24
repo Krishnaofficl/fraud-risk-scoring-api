@@ -162,7 +162,7 @@ Tracking implementation progress for the **Fraud/Risk Scoring API** project acro
 
 - [x] **8.1 Multi-Stage Dockerfile:** Write `Dockerfile` with `python:3.12-slim` builder stage (compiling wheels) and a slim runtime stage.
 - [x] **8.2 Docker Compose Stack:** Write `docker-compose.yml` defining `api` and `postgres` services with named volumes and environment variables.
-- [ ] **8.3 Healthchecks in Compose:** Add healthcheck conditions (`pg_isready` on postgres, curl `/health` on api) to ensure correct startup order.
+- [x] **8.3 Healthchecks in Compose:** Add healthcheck conditions (`pg_isready` on postgres, curl `/health` on api) to ensure correct startup order.
 - [ ] **8.4 Test Compose Profile:** Create `docker-compose.test.yml` for running integration test suites inside isolated containers.
 - [ ] **8.5 Cold Boot Verification:** Test `docker compose up --build` from a clean terminal and verify Swagger UI at `http://localhost:8000/docs`.
 

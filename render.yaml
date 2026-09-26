@@ -3,7 +3,7 @@ services:
     name: fraud-risk-scoring-api
     runtime: docker
     plan: free
-    region: oregon
+    region: ohio
     dockerfilePath: ./Dockerfile
     healthCheckPath: /health
     envVars:

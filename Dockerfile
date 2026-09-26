@@ -22,8 +22,29 @@ RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
 # ==============================================================================
-# Stage 2: Slim Runtime Stage
-# Minimal, secure production image running as non-root user
+# Stage 2: Test Target Stage (Used by docker-compose.test.yml)
+# Isolated test execution stage with pytest and testing utilities
+# ==============================================================================
+FROM builder AS test
+
+WORKDIR /app
+
+# Install test dependencies into virtual environment
+RUN /opt/venv/bin/pip install --no-cache-dir pytest>=8.2.0 pytest-asyncio>=0.23.0
+
+# Copy all application code, migrations, artifacts, and test suites
+COPY pyproject.toml .
+COPY alembic.ini .
+COPY alembic ./alembic
+COPY artifacts ./artifacts
+COPY app ./app
+COPY tests ./tests
+
+CMD ["pytest", "-v"]
+
+# ==============================================================================
+# Stage 3: Slim Production Runtime Stage (Default final image)
+# Minimal, secure production image running Uvicorn as non-root user
 # ==============================================================================
 FROM python:3.12-slim AS runtime
 
@@ -62,27 +83,5 @@ USER appuser
 # Expose standard API port
 EXPOSE 8000
 
-# Start Uvicorn ASGI server with automatic migrations and dynamic port support
+# Start Uvicorn ASGI server with automatic migrations and dynamic cloud port support
 CMD ["sh", "-c", "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
-
-# ==============================================================================
-# Stage 3: Test Target Stage
-# Isolated test execution stage with pytest and testing utilities
-# ==============================================================================
-FROM runtime AS test
-
-USER root
-
-# Install test dependencies
-RUN /opt/venv/bin/pip install --no-cache-dir pytest>=8.2.0 pytest-asyncio>=0.23.0
-
-# Copy test suite and configuration
-COPY pyproject.toml .
-COPY tests ./tests
-
-# Set non-root permissions
-RUN chown -R appuser:appgroup /app
-
-USER appuser
-
-CMD ["pytest", "-v"]

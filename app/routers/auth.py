@@ -8,6 +8,7 @@ from app.core.security import create_access_token, hash_password, verify_passwor
 from app.db.session import get_db
 from app.models.user import User
 from app.schemas.auth import TokenResponse, UserLogin, UserRegister, UserResponse
+from app.schemas.error import ErrorResponse
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 logger = get_logger("app.audit.auth")
@@ -19,6 +20,19 @@ logger = get_logger("app.audit.auth")
     status_code=status.HTTP_201_CREATED,
     summary="Register a new user account",
     description="Registers a new user with a validated email and password. Passwords are encrypted using Argon2id.",
+    responses={
+        status.HTTP_201_CREATED: {
+            "description": "User account created successfully.",
+        },
+        status.HTTP_409_CONFLICT: {
+            "model": ErrorResponse,
+            "description": "A user with this email address already exists.",
+        },
+        422: {
+            "model": ErrorResponse,
+            "description": "Registration payload validation failed (e.g. password < 8 chars).",
+        },
+    },
 )
 async def register(
     payload: UserRegister,
@@ -66,6 +80,23 @@ async def register(
     status_code=status.HTTP_200_OK,
     summary="Authenticate user and obtain JWT token",
     description="Authenticates user credentials against the database and returns a signed Bearer JWT.",
+    responses={
+        status.HTTP_200_OK: {
+            "description": "Authentication successful; Bearer JWT access token issued.",
+        },
+        status.HTTP_401_UNAUTHORIZED: {
+            "model": ErrorResponse,
+            "description": "Invalid email or password credentials.",
+        },
+        status.HTTP_403_FORBIDDEN: {
+            "model": ErrorResponse,
+            "description": "User account is inactive or disabled.",
+        },
+        422: {
+            "model": ErrorResponse,
+            "description": "Login payload validation failed.",
+        },
+    },
 )
 async def login(
     payload: UserLogin,

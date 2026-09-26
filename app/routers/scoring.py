@@ -13,6 +13,7 @@ from app.db.session import get_db
 from app.models.model_version import ModelVersion
 from app.models.scoring import ScoringRequest
 from app.models.user import User
+from app.schemas.error import ErrorResponse
 
 logger = get_logger("app.audit.scoring")
 from app.schemas.scoring import (
@@ -38,6 +39,23 @@ router = APIRouter(prefix="/v1", tags=["Scoring"])
         "Applies automated risk decision thresholds (< 0.20 APPROVE, 0.20–0.40 REVIEW, > 0.40 DENY), "
         "stores the audit record in PostgreSQL, and returns the prediction result."
     ),
+    responses={
+        status.HTTP_201_CREATED: {
+            "description": "Applicant evaluated successfully and audit transaction saved.",
+        },
+        status.HTTP_401_UNAUTHORIZED: {
+            "model": ErrorResponse,
+            "description": "Bearer JWT token missing, expired, or invalid.",
+        },
+        422: {
+            "model": ErrorResponse,
+            "description": "Applicant feature payload failed validation checks.",
+        },
+        status.HTTP_503_SERVICE_UNAVAILABLE: {
+            "model": ErrorResponse,
+            "description": "Machine learning model pipeline is not loaded in memory.",
+        },
+    },
 )
 async def score_applicant(
     applicant: LoanApplicantInput,
@@ -116,6 +134,15 @@ async def score_applicant(
         "Retrieves a paginated list of scoring transactions submitted by the authenticated user. "
         "Excludes soft-deleted records and supports filtering by decision, score threshold, and date range."
     ),
+    responses={
+        status.HTTP_200_OK: {
+            "description": "Paginated scoring evaluations matching query criteria.",
+        },
+        status.HTTP_401_UNAUTHORIZED: {
+            "model": ErrorResponse,
+            "description": "Bearer JWT token missing, expired, or invalid.",
+        },
+    },
 )
 async def get_scoring_history(
     limit: int = Query(default=10, ge=1, le=100, description="Page size limit"),
@@ -180,6 +207,23 @@ async def get_scoring_history(
     status_code=status.HTTP_200_OK,
     summary="Get detailed scoring evaluation by ID",
     description="Fetches a single scoring request by its unique UUID. Strictly owner-only authorization.",
+    responses={
+        status.HTTP_200_OK: {
+            "description": "Detailed scoring record and applicant input features.",
+        },
+        status.HTTP_401_UNAUTHORIZED: {
+            "model": ErrorResponse,
+            "description": "Bearer JWT token missing, expired, or invalid.",
+        },
+        status.HTTP_403_FORBIDDEN: {
+            "model": ErrorResponse,
+            "description": "Access forbidden: record belongs to another user.",
+        },
+        status.HTTP_404_NOT_FOUND: {
+            "model": ErrorResponse,
+            "description": "Scoring record not found or soft-deleted.",
+        },
+    },
 )
 async def get_scoring_record(
     score_id: UUID,
@@ -219,6 +263,23 @@ async def get_scoring_record(
     status_code=status.HTTP_200_OK,
     summary="Soft-delete a scoring evaluation by ID",
     description="Marks a scoring transaction as soft-deleted by setting deleted_at. Strictly owner-only authorization.",
+    responses={
+        status.HTTP_200_OK: {
+            "description": "Scoring record successfully soft-deleted.",
+        },
+        status.HTTP_401_UNAUTHORIZED: {
+            "model": ErrorResponse,
+            "description": "Bearer JWT token missing, expired, or invalid.",
+        },
+        status.HTTP_403_FORBIDDEN: {
+            "model": ErrorResponse,
+            "description": "Forbidden: cannot delete record owned by another user.",
+        },
+        status.HTTP_404_NOT_FOUND: {
+            "model": ErrorResponse,
+            "description": "Scoring record not found or already deleted.",
+        },
+    },
 )
 async def soft_delete_scoring_record(
     score_id: UUID,
@@ -269,8 +330,14 @@ async def soft_delete_scoring_record(
     "/model/info",
     response_model=ModelInfoResponse,
     status_code=status.HTTP_200_OK,
+    tags=["Model"],
     summary="Get active model metadata and benchmark reproduction metrics",
     description="Returns the active model version, training timestamp, reproduction holdout test ROC-AUC, and paper baseline ROC-AUC.",
+    responses={
+        status.HTTP_200_OK: {
+            "description": "Active model metadata and benchmark reproduction metrics.",
+        },
+    },
 )
 async def get_model_info(
     request: Request,

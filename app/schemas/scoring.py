@@ -54,7 +54,54 @@ class LoanApplicantInput(BaseModel):
     38-Feature Pydantic schema for vehicle loan applicants.
     Accepts both standard snake_case and original CSV column aliases.
     """
-    model_config = ConfigDict(populate_by_name=True, extra="ignore")
+    model_config = ConfigDict(
+        populate_by_name=True,
+        extra="ignore",
+        json_schema_extra={
+            "examples": [
+                {
+                    "disbursed_amount": 50000.0,
+                    "asset_cost": 75000.0,
+                    "ltv": 66.67,
+                    "branch_id": 67,
+                    "supplier_id": 22807,
+                    "manufacturer_id": 45,
+                    "current_pincode_id": 1441,
+                    "state_id": 6,
+                    "employee_code_id": 1998,
+                    "aadhar_flag": 1,
+                    "pan_flag": 1,
+                    "voterid_flag": 0,
+                    "driving_flag": 0,
+                    "passport_flag": 0,
+                    "perform_cns_score": 750,
+                    "pri_no_of_accts": 3,
+                    "pri_active_accts": 2,
+                    "pri_overdue_accts": 0,
+                    "pri_current_balance": 15000.0,
+                    "pri_sanctioned_amount": 100000.0,
+                    "pri_disbursed_amount": 100000.0,
+                    "sec_no_of_accts": 0,
+                    "sec_active_accts": 0,
+                    "sec_overdue_accts": 0,
+                    "sec_current_balance": 0.0,
+                    "sec_sanctioned_amount": 0.0,
+                    "sec_disbursed_amount": 0.0,
+                    "primary_instal_amt": 2500.0,
+                    "sec_instal_amt": 0.0,
+                    "new_accts_in_last_six_months": 0,
+                    "delinquent_accts_in_last_six_months": 0,
+                    "average_acct_age": "2yrs 0mon",
+                    "credit_history_length": "3yrs 6mon",
+                    "no_of_inquiries": 0,
+                    "date_of_birth": "1988-05-15",
+                    "disbursal_date": "2018-08-01",
+                    "employment_type": "Salaried",
+                    "perform_cns_score_description": "A-Very Low Risk",
+                }
+            ]
+        },
+    )
 
     # Financial & Loan Metrics
     disbursed_amount: float = Field(
@@ -226,7 +273,19 @@ class ScoringResultResponse(BaseModel):
     Standard API response schema for a fraud risk scoring prediction.
     Supports direct serialization from the ScoringRequest ORM model.
     """
-    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
+    model_config = ConfigDict(
+        from_attributes=True,
+        populate_by_name=True,
+        json_schema_extra={
+            "example": {
+                "request_id": "c7a8b412-88ec-4c6e-821b-cfc19958ebae",
+                "probability": 0.1742,
+                "decision": "APPROVE",
+                "model_version": "v1-baseline",
+                "created_at": "2026-09-26T12:00:00Z",
+            }
+        },
+    )
 
     request_id: UUID = Field(
         ...,
@@ -239,7 +298,7 @@ class ScoringResultResponse(BaseModel):
         ge=0.0,
         le=1.0,
         description="Predicted probability of loan default (0.0 to 1.0)",
-        examples=[0.1944],
+        examples=[0.1742],
     )
     decision: str = Field(
         ...,
@@ -261,6 +320,29 @@ class ScoringDetailResponse(ScoringResultResponse):
     """
     Detailed scoring transaction response including applicant input features and user ID.
     """
+    model_config = ConfigDict(
+        from_attributes=True,
+        populate_by_name=True,
+        json_schema_extra={
+            "example": {
+                "request_id": "c7a8b412-88ec-4c6e-821b-cfc19958ebae",
+                "user_id": "fa94e502-dcfb-4a58-9c6a-493e9ad1cf23",
+                "probability": 0.1742,
+                "decision": "APPROVE",
+                "model_version": "v1-baseline",
+                "created_at": "2026-09-26T12:00:00Z",
+                "input_features": {
+                    "disbursed_amount": 50000.0,
+                    "asset_cost": 75000.0,
+                    "ltv": 66.67,
+                    "branch_id": 67,
+                    "supplier_id": 22807,
+                    "perform_cns_score": 750,
+                },
+            }
+        },
+    )
+
     user_id: UUID = Field(..., description="ID of the user who submitted the scoring request")
     input_features: Dict[str, Any] = Field(..., description="Raw applicant input features evaluated")
 
@@ -269,6 +351,25 @@ class PaginatedScoringHistoryResponse(BaseModel):
     """
     Paginated response container for historical scoring queries.
     """
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "items": [
+                    {
+                        "request_id": "c7a8b412-88ec-4c6e-821b-cfc19958ebae",
+                        "probability": 0.1742,
+                        "decision": "APPROVE",
+                        "model_version": "v1-baseline",
+                        "created_at": "2026-09-26T12:00:00Z",
+                    }
+                ],
+                "total": 42,
+                "limit": 10,
+                "offset": 0,
+            }
+        }
+    )
+
     items: list[ScoringResultResponse] = Field(..., description="List of scoring evaluations")
     total: int = Field(..., ge=0, description="Total count of matching records across all pages")
     limit: int = Field(..., ge=1, description="Page limit")
@@ -279,7 +380,18 @@ class ModelInfoResponse(BaseModel):
     """
     Public metadata response for the active machine learning risk model.
     """
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(
+        from_attributes=True,
+        json_schema_extra={
+            "example": {
+                "version": "v1-baseline",
+                "trained_at": "2026-09-21T18:00:00Z",
+                "reported_auc": 0.6665,
+                "paper_baseline_auc": 0.5180,
+                "artifact_path": "artifacts/model_pipeline.joblib",
+            }
+        },
+    )
 
     version: str = Field(..., description="Model version identifier", examples=["v1-baseline"])
     trained_at: datetime = Field(..., description="UTC timestamp when the model was trained")

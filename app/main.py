@@ -68,13 +68,83 @@ async def lifespan(app: FastAPI):
     app.state.model_pipeline = None
 
 
+API_DESCRIPTION = """
+# Fraud & Risk Scoring API 🛡️
+
+Production-ready asynchronous machine learning risk evaluation and credit default prediction service reproducing the **Amazon Fraud Dataset Benchmark (FDB)** `vehicleloan` ML task.
+
+---
+
+### 📊 Benchmark Performance
+- **Reproduction Holdout ROC-AUC:** `0.6665`
+- **Published Paper Baseline:** `0.5180`
+- **Performance Lift:** **+28.7% improvement** over baseline
+- **Inference Latency:** `< 1.2 ms` per applicant via `asyncio.to_thread` non-blocking worker pool
+
+---
+
+### 🚀 Interactive Swagger Quickstart
+1. **Create an Account:** Call `POST /auth/register` or `POST /auth/login` to obtain your signed Bearer JWT token.
+2. **Authorize:** Click the green **Authorize 🔓** button at the top right of this page and enter `Bearer <your_token>`.
+3. **Score an Applicant:** Execute `POST /v1/score` using one of the pre-loaded example payloads (Low Risk vs. High Risk).
+4. **Inspect Audit History:** Query `GET /v1/scores` with pagination, date bounds, or risk filter flags.
+5. **Explore Portal:** Access the interactive web portal at [/](/) or [/dashboard](/dashboard).
+
+---
+
+### 🏛️ Architecture & Reliability
+- **Auth:** Argon2id password hashing + RFC-7519 signed JWT Bearer tokens
+- **Database:** Serverless PostgreSQL 16 via asyncpg connection pooling & SQLAlchemy 2.0
+- **Auditing:** Complete input feature capture (`JSONB`), predicted probabilities, and risk decisions with soft-delete support
+- **Distributed Tracing:** Asynchronous `X-Request-ID` correlation ID lifecycle across request-response contexts
+- **Observability:** Dual `/health` liveness and `/health/ready` database/model readiness probes
+"""
+
+TAGS_METADATA = [
+    {
+        "name": "Health",
+        "description": "Liveness and cloud/Kubernetes readiness probes.",
+    },
+    {
+        "name": "Authentication",
+        "description": "User registration and Argon2id-authenticated JWT token issuance.",
+    },
+    {
+        "name": "Users",
+        "description": "User profile retrieval and account identity management.",
+    },
+    {
+        "name": "Scoring",
+        "description": "Vehicle loan risk scoring, non-blocking ML inference, and audit history.",
+    },
+    {
+        "name": "Model",
+        "description": "Model metadata, active version parameters, and benchmark reproduction metrics.",
+    },
+]
+
 app = FastAPI(
     title=settings.PROJECT_NAME,
-    description="FastAPI service reproducing Amazon FDB vehicle loan risk benchmark",
-    version="0.1.0",
+    description=API_DESCRIPTION,
+    version="1.0.0",
     lifespan=lifespan,
     docs_url="/docs",
     redoc_url="/redoc",
+    openapi_tags=TAGS_METADATA,
+    contact={
+        "name": "Fraud Risk Engineering Team",
+        "url": "https://github.com/Krishnaofficl/fraud-risk-scoring-api",
+    },
+    license_info={
+        "name": "MIT License",
+        "url": "https://opensource.org/licenses/MIT",
+    },
+    swagger_ui_parameters={
+        "defaultModelsExpandDepth": 2,
+        "docExpansion": "list",
+        "displayRequestDuration": True,
+        "filter": True,
+    },
 )
 
 # Mount Middleware Stack

@@ -5,6 +5,15 @@ from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 class UserRegister(BaseModel):
     """Payload schema for new user registration."""
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "email": "analyst@riskplatform.com",
+                "password": "SecurePassw0rd!",
+            }
+        }
+    )
+
     email: EmailStr = Field(
         ...,
         description="RFC-compliant user email address",
@@ -21,6 +30,15 @@ class UserRegister(BaseModel):
 
 class UserLogin(BaseModel):
     """Payload schema for user authentication / login."""
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "email": "analyst@riskplatform.com",
+                "password": "SecurePassw0rd!",
+            }
+        }
+    )
+
     email: EmailStr = Field(
         ...,
         description="Registered user email address",
@@ -35,6 +53,16 @@ class UserLogin(BaseModel):
 
 class TokenResponse(BaseModel):
     """Response schema containing issued Bearer JWT access token."""
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                "token_type": "bearer",
+                "expires_in": 3600,
+            }
+        }
+    )
+
     access_token: str = Field(
         ...,
         description="Cryptographically signed JWT bearer token",
@@ -70,4 +98,14 @@ class UserResponse(BaseModel):
         description="UTC timestamp when the user account was created",
     )
 
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(
+        from_attributes=True,
+        json_schema_extra={
+            "example": {
+                "id": "fa94e502-dcfb-4a58-9c6a-493e9ad1cf23",
+                "email": "analyst@riskplatform.com",
+                "is_active": True,
+                "created_at": "2026-09-26T12:00:00Z",
+            }
+        },
+    )

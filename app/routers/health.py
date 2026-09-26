@@ -5,11 +5,20 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.config import settings
 from app.core.exceptions import DatabaseUnavailableException, ModelNotLoadedException
 from app.db.session import get_db
+from app.schemas.error import ErrorResponse
 
 router = APIRouter(tags=["Health"])
 
 
-@router.get("/health", summary="Liveness check")
+@router.get(
+    "/health",
+    summary="Liveness check",
+    responses={
+        status.HTTP_200_OK: {
+            "description": "API process is running and able to handle HTTP requests.",
+        },
+    },
+)
 async def liveness_check():
     """Returns 200 OK if the API process is alive and receiving traffic."""
     return {
@@ -19,7 +28,19 @@ async def liveness_check():
     }
 
 
-@router.get("/health/ready", summary="Readiness check")
+@router.get(
+    "/health/ready",
+    summary="Readiness check",
+    responses={
+        status.HTTP_200_OK: {
+            "description": "Service dependencies (PostgreSQL database and ML pipeline) are fully ready.",
+        },
+        status.HTTP_503_SERVICE_UNAVAILABLE: {
+            "model": ErrorResponse,
+            "description": "Service is unavailable: database ping failed or ML model is not in memory.",
+        },
+    },
+)
 async def readiness_check(request: Request, db: AsyncSession = Depends(get_db)):
     """
     Returns 200 OK if the API, database, and ML pipeline are ready to serve traffic.

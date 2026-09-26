@@ -42,9 +42,14 @@ class Settings(BaseSettings):
         SQLAlchemy async requires 'postgresql+asyncpg://'.
         """
         if v.startswith("postgres://"):
-            return v.replace("postgres://", "postgresql+asyncpg://", 1)
+            v = v.replace("postgres://", "postgresql+asyncpg://", 1)
         elif v.startswith("postgresql://") and not v.startswith("postgresql+asyncpg://"):
-            return v.replace("postgresql://", "postgresql+asyncpg://", 1)
+            v = v.replace("postgresql://", "postgresql+asyncpg://", 1)
+
+        # Normalize cloud provider SSL parameter (libpq uses sslmode=, asyncpg uses ssl=)
+        if "sslmode=" in v:
+            v = v.replace("sslmode=", "ssl=")
+
         return v
 
 

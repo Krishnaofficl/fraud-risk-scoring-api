@@ -62,8 +62,8 @@ USER appuser
 # Expose standard API port
 EXPOSE 8000
 
-# Start Uvicorn ASGI server
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Start Uvicorn ASGI server with automatic migrations and dynamic port support
+CMD ["sh", "-c", "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
 
 # ==============================================================================
 # Stage 3: Test Target Stage

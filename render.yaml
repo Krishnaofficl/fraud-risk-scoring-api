@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: fraud-risk-scoring-api
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: DEBUG
+        value: false
+      - key: LOG_JSON_FORMAT
+        value: true
+      - key: LOG_LEVEL
+        value: INFO
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: MODEL_PATH
+        value: artifacts/model_pipeline.joblib
+      - key: MODEL_VERSION
+        value: v1-baseline

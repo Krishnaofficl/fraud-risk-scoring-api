@@ -173,7 +173,7 @@ Tracking implementation progress for the **Fraud/Risk Scoring API** project acro
 ## Phase 9 — Cloud Deployment
 > **Goal:** Public HTTPS deployment on Render, Railway, or Fly.io with managed PostgreSQL and automated migrations.
 
-- [ ] **9.1 Provision Cloud Database:** Create managed PostgreSQL instance on Render, Railway, or Fly.io.
+- [x] **9.1 Provision Cloud Database:** Create managed PostgreSQL instance on Render, Railway, or Fly.io (provisioned on Neon Serverless PostgreSQL with verified connectivity).
 - [ ] **9.2 Cloud Environment Variables:** Configure `DATABASE_URL`, `JWT_SECRET`, `ENVIRONMENT=production`, and `DEBUG=false` in the cloud console.
 - [ ] **9.3 Deploy API Service:** Deploy container or Git repository service hooked to the cloud PostgreSQL database.
 - [ ] **9.4 Automated Migrations:** Configure build/release command to run `alembic upgrade head` before booting Uvicorn.

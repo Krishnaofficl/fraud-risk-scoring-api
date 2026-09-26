@@ -50,6 +50,12 @@ class Settings(BaseSettings):
         if "sslmode=" in v:
             v = v.replace("sslmode=", "ssl=")
 
+        # Strip unsupported libpq query parameters that cause asyncpg.connect() to fail (e.g. Neon channel_binding)
+        import re
+        v = re.sub(r"[?&]channel_binding=[^&]+", "", v)
+        if "?" not in v and "&" in v:
+            v = v.replace("&", "?", 1)
+
         return v
 
 

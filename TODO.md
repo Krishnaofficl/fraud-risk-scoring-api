@@ -190,8 +190,8 @@ Tracking implementation progress for the **Fraud/Risk Scoring API** project acro
 - [x] **10.2 Finalize REPRODUCTION.md:** Document the exact train/test split numbers, reproduced AUC vs. paper baselines, and feature engineering stretch notes.
 - [x] **10.3 Swagger UI Docstrings:** Refine endpoint descriptions, summary tags, and request examples so Swagger `/docs` works seamlessly as a live interactive demo.
 - [x] **10.4 Git History Polish:** Ensure Git commit history is organized with clear, conventional commit messages reflecting incremental work.
-- [ ] **10.5 Interview Talking Points:** Review knowledge check items (unit vs. integration tests, transaction rollback, correlation IDs, async event loop safety in `docs/INTERVIEW_GUIDE.md`).
-- [ ] **10.6 Resume Project Section & Portfolio Assets:** Prepare high-impact, ATS-optimized resume bullet points (3-bullet and 5-bullet formats for Backend and ML roles), quantifiable metrics (+28.7% ROC-AUC lift, <1.2ms latency, 95 tests, 100% pass rate), 1-line elevator pitch, tech stack keywords, and STAR behavioral narratives in `docs/RESUME_POINTS.md`.
+- [x] **10.5 Interview Talking Points:** Review knowledge check items (unit vs. integration tests, transaction rollback, correlation IDs, async event loop safety in `docs/INTERVIEW_GUIDE.md`).
+- [x] **10.6 Resume Project Section & Portfolio Assets:** Prepare high-impact, ATS-optimized resume bullet points (3-bullet and 5-bullet formats for Backend and ML roles), quantifiable metrics (+28.7% ROC-AUC lift, <1.2ms latency, 95 tests, 100% pass rate), 1-line elevator pitch, tech stack keywords, and STAR behavioral narratives in `docs/RESUME_POINTS.md`.
 
-*Exit Criteria:* Anyone landing on the repository can understand, clone, run, and evaluate the project in under 5 minutes, and copy-paste polished, metric-driven achievements onto a technical resume.
+*Exit Criteria:* Anyone landing on the repository can understand, clone, run, and evaluate the project in under 5 minutes, and copy-paste polished, metric-driven achievements onto a technical resume. ( All criteria met!)
 

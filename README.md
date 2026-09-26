@@ -197,7 +197,9 @@ fraud-risk-scoring-api/
 ├── artifacts/                  # Serialized ML model pipeline (ColumnTransformer + XGBoost)
 ├── data/                       # Dataset directories (.gitkeep)
 ├── docs/                       # Comprehensive documentation & research reports
-│   └── REPRODUCTION.md         # FDB paper baseline reproduction & methodology
+│   ├── REPRODUCTION.md         # FDB paper baseline reproduction & methodology
+│   ├── INTERVIEW_GUIDE.md      # Senior engineering interview defense guide & architecture deep-dive
+│   └── RESUME_POINTS.md        # ATS-optimized resume bullet points, metrics, and STAR stories
 ├── scripts/                    # Ingestion & training scripts (train.py, download_data.py)
 ├── tests/                      # Pytest automated test suite
 │   ├── unit/                   # In-memory unit tests

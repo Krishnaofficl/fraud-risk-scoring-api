@@ -186,7 +186,7 @@ Tracking implementation progress for the **Fraud/Risk Scoring API** project acro
 ## Phase 10 — Documentation & Polish
 > **Goal:** High-impact documentation and demonstration material for technical interviews.
 
-- [ ] **10.1 Root README:** Complete `README.md` with system architecture diagram, quickstart commands, API reference, and live deployment link.
+- [x] **10.1 Root README:** Complete `README.md` with system architecture diagram, quickstart commands, API reference, and live deployment link.
 - [ ] **10.2 Finalize REPRODUCTION.md:** Document the exact train/test split numbers, reproduced AUC vs. paper baselines, and feature engineering stretch notes.
 - [ ] **10.3 Swagger UI Docstrings:** Refine endpoint descriptions, summary tags, and request examples so Swagger `/docs` works seamlessly as a live interactive demo.
 - [ ] **10.4 Git History Polish:** Ensure Git commit history is organized with clear, conventional commit messages reflecting incremental work.

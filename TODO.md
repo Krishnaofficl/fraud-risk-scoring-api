@@ -164,9 +164,9 @@ Tracking implementation progress for the **Fraud/Risk Scoring API** project acro
 - [x] **8.2 Docker Compose Stack:** Write `docker-compose.yml` defining `api` and `postgres` services with named volumes and environment variables.
 - [x] **8.3 Healthchecks in Compose:** Add healthcheck conditions (`pg_isready` on postgres, curl `/health` on api) to ensure correct startup order.
 - [x] **8.4 Test Compose Profile:** Create `docker-compose.test.yml` for running integration test suites inside isolated containers.
-- [ ] **8.5 Cold Boot Verification:** Test `docker compose up --build` from a clean terminal and verify Swagger UI at `http://localhost:8000/docs`.
+- [x] **8.5 Cold Boot Verification:** Test `docker compose up --build` from a clean terminal and verify Swagger UI at `http://localhost:8000/docs`.
 
-*Exit Criteria:* A single `docker compose up` spins up a fully functioning, connected API and database.
+*Exit Criteria:* A single `docker compose up` spins up a fully functioning, connected API and database. ( All criteria met!)
 
 ---
 

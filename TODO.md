@@ -195,3 +195,8 @@ Tracking implementation progress for the **Fraud/Risk Scoring API** project acro
 
 *Exit Criteria:* Anyone landing on the repository can understand, clone, run, and evaluate the project in under 5 minutes, and copy-paste polished, metric-driven achievements onto a technical resume. ( All criteria met!)
 
+---
+
+> **Project Milestone:** v1 of project is completed. Awaiting further updates.
+
+

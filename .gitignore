@@ -38,9 +38,10 @@ data/raw/*
 data/processed/*
 !data/processed/.gitkeep
 
-# ML Model Artifacts (keep directory via .gitkeep)
+# ML Model Artifacts (keep lightweight model pipeline artifact in git)
 artifacts/*
 !artifacts/.gitkeep
+!artifacts/model_pipeline.joblib
 
 # IDEs
 .idea/

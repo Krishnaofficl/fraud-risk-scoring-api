@@ -183,26 +183,15 @@ Tracking implementation progress for the **Fraud/Risk Scoring API** project acro
 
 ---
 
-## Phase 10 — Documentation & Polish
-> **Goal:** High-impact documentation and demonstration material for technical interviews.
+## Phase 10 — Documentation, Polish & Resume Assets
+> **Goal:** High-impact documentation, demonstration material, interview talking points, and resume assets for technical interviews.
 
 - [x] **10.1 Root README:** Complete `README.md` with system architecture diagram, quickstart commands, API reference, and live deployment link.
 - [x] **10.2 Finalize REPRODUCTION.md:** Document the exact train/test split numbers, reproduced AUC vs. paper baselines, and feature engineering stretch notes.
 - [x] **10.3 Swagger UI Docstrings:** Refine endpoint descriptions, summary tags, and request examples so Swagger `/docs` works seamlessly as a live interactive demo.
 - [x] **10.4 Git History Polish:** Ensure Git commit history is organized with clear, conventional commit messages reflecting incremental work.
-- [ ] **10.5 Interview Talking Points:** Review knowledge check items (unit vs. integration tests, transaction rollback, correlation IDs, async event loop safety).
+- [ ] **10.5 Interview Talking Points:** Review knowledge check items (unit vs. integration tests, transaction rollback, correlation IDs, async event loop safety in `docs/INTERVIEW_GUIDE.md`).
+- [ ] **10.6 Resume Project Section & Portfolio Assets:** Prepare high-impact, ATS-optimized resume bullet points (3-bullet and 5-bullet formats for Backend and ML roles), quantifiable metrics (+28.7% ROC-AUC lift, <1.2ms latency, 95 tests, 100% pass rate), 1-line elevator pitch, tech stack keywords, and STAR behavioral narratives in `docs/RESUME_POINTS.md`.
 
-*Exit Criteria:* Anyone landing on the repository can understand, clone, run, and evaluate the project in under 5 minutes.
-
----
-
-## Phase 11 — Resume & Portfolio Assets
-> **Goal:** High-impact resume bullet points, quantifiable metrics, and portfolio descriptions tailored for Software Engineer (Backend), ML Engineer, and MLOps roles.
-
-- [ ] **11.1 ATS-Optimized Resume Bullet Points:** Craft 3-bullet and 5-bullet impact statements with action verbs, quantifiable achievements (+28.7% ROC-AUC lift, <1.2ms latency, 95 tests, 100% pass rate), and modern tech keywords.
-- [ ] **11.2 Project Header & Summary Pitch:** Formulate 1-line elevator pitches, project title variations, tech stack tags (Python, FastAPI, scikit-learn, PostgreSQL, Docker, Neon, Render), and live link formatting for resume headers.
-- [ ] **11.3 STAR Interview & Portfolio Narratives:** Document Situation, Task, Action, Result (STAR) stories highlighting architectural decisions (non-blocking threadpool inference, transaction rollback savepoints, Argon2id security).
-- [ ] **11.4 Dedicated Resume Guide Document:** Create `docs/RESUME_POINTS.md` with copy-pasteable markdown/text blocks, LinkedIn project summaries, and recruiter quick-pitch scripts.
-
-*Exit Criteria:* Ready-to-use, tailored resume snippets with verified metrics that maximize callback rates for backend and ML infrastructure positions.
+*Exit Criteria:* Anyone landing on the repository can understand, clone, run, and evaluate the project in under 5 minutes, and copy-paste polished, metric-driven achievements onto a technical resume.
 
